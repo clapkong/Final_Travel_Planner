@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:csc_picker/csc_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -96,6 +97,16 @@ class _HomePageState extends State<HomePage> {
   DateTime date = DateTime.now();
   bool flag_from = false;
   bool flag = false;
+  String countryValue = "";
+  String stateValue = "";
+  String cityValue = "";
+  String address = "";
+
+  void _updateAddress() {
+                setState(() {
+                  address = "$cityValue, $stateValue, $countryValue";
+                });
+              }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +114,7 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.all(20.0),
       child: Column(
         children: [
-          
+          //AI Command Textbox 
           Row(
             children: [
               Expanded(
@@ -133,9 +144,110 @@ class _HomePageState extends State<HomePage> {
           Text('Give us a little more information about your joruney :)'), 
           SizedBox(height: 10),
           Row(
+            children: <Widget>[
+              Text('목적지(Desitnation): '),
+              Expanded(
+                child: CSCPicker(
+                  ///Enable disable state dropdown [OPTIONAL PARAMETER]
+                  showStates: true,
+
+                  /// Enable disable city drop down [OPTIONAL PARAMETER]
+                  showCities: true,
+
+                  ///Enable (get flag with country name) / Disable (Disable flag) / ShowInDropdownOnly (display flag in dropdown only) [OPTIONAL PARAMETER]
+                  flagState: CountryFlag.DISABLE,
+
+                  ///Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER] (USE with disabledDropdownDecoration)
+                  dropdownDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Colors.white,
+                      border:
+                          Border.all(color: Colors.grey.shade300, width: 1)),
+
+                  ///Disabled Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER]  (USE with disabled dropdownDecoration)
+                  disabledDropdownDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Colors.grey.shade300,
+                      border:
+                          Border.all(color: Colors.grey.shade300, width: 1)),
+
+                  ///placeholders for dropdown search field
+                  countrySearchPlaceholder: "Country",
+                  stateSearchPlaceholder: "State",
+                  citySearchPlaceholder: "City",
+
+                  ///labels for dropdown
+                  countryDropdownLabel: "Country",
+                  stateDropdownLabel: "State",
+                  cityDropdownLabel: "City",
+
+                  ///Disable country dropdown (Note: use it with default country)
+                  //disableCountry: true,
+
+                  ///selected item style [OPTIONAL PARAMETER]
+                  selectedItemStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+
+                  ///DropdownDialog Heading style [OPTIONAL PARAMETER]
+                  dropdownHeadingStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold),
+
+                  ///DropdownDialog Item style [OPTIONAL PARAMETER]
+                  dropdownItemStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+
+                  ///Dialog box radius [OPTIONAL PARAMETER]
+                  dropdownDialogRadius: 10.0,
+
+                  ///Search bar radius [OPTIONAL PARAMETER]
+                  searchBarRadius: 10.0,
+
+                  ///triggers once country selected in dropdown
+                  onCountryChanged: (value) {
+                    setState(() {
+                      ///store value in country variable
+                      countryValue = value;
+                      _updateAddress();
+                    });
+                  },
+
+                  ///triggers once state selected in dropdown
+                  onStateChanged: (value) {
+                    setState(() {
+                      ///store value in state variable
+                      stateValue = value ?? '';
+                      _updateAddress();
+                    });
+                  },
+
+                  ///triggers once city selected in dropdown
+                  onCityChanged: (value) {
+                    setState(() {
+                      ///store value in city variable
+                      cityValue = value ?? '';
+                      _updateAddress();
+                    });
+                  },
+
+                  ///Show only specific countries using country filter
+                  // countryFilter: ["United States", "Canada", "Mexico"],
+                ),
+              ),
+              ],
+          ),
+          Text(address),
+          //여행 기간
+          SizedBox(height:10),
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children:[
-              Text('여행 기간: '),
+              Text('여행 기간(Duration): '),
               SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () async {
