@@ -102,6 +102,23 @@ class _HomePageState extends State<HomePage> {
   String cityValue = "";
   String address = "";
 
+  int _counter = 1;
+  double _currentSliderValue = 20;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  void _decrementCounter() {
+    setState(() {
+      if (_counter > 0) {
+        _counter--;
+      }
+    });
+  }
+
   void _updateAddress() {
                 setState(() {
                   address = "$cityValue, $stateValue, $countryValue";
@@ -140,7 +157,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          SizedBox(height:20),
+          SizedBox(height:40),
           Text('Give us a little more information about your joruney :)'), 
           SizedBox(height: 10),
           Row(
@@ -243,7 +260,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Text(address),
           //여행 기간
-          SizedBox(height:10),
+          SizedBox(height:20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children:[
@@ -291,6 +308,42 @@ class _HomePageState extends State<HomePage> {
             ]
           ),
           SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:[
+              Text('여행 인원:'),
+              SizedBox(width:50),
+              IconButton(
+                icon: Icon(Icons.remove),
+                onPressed: _decrementCounter,
+              ),
+              Text(
+                '$_counter',
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: _incrementCounter,
+              ),
+            ]
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:[
+              Text('예산(만원):  '),
+              Text("${_currentSliderValue} "),
+              Slider(
+                value: _currentSliderValue,
+                max: 2000,
+                divisions: 2000,
+                label: _currentSliderValue.round().toString(),
+                onChanged: (double value) {
+                  setState(() {
+                    _currentSliderValue = value;
+                  });
+                },
+              ),
+            ]
+          )
         ],
       ),
     );
