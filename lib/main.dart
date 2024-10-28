@@ -104,6 +104,8 @@ class _HomePageState extends State<HomePage> {
 
   int _counter = 1;
   double _currentSliderValue = 20;
+  int accommodation = 0;
+  List<bool> travel_style = [false, false, false, false, false, false];
 
   void _incrementCounter() {
     setState(() {
@@ -157,8 +159,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          Text('여행 스타일, 특이사항, 선호하는 교통수단, 숙소 등을 편하게 말씀해주세요!'),
-          SizedBox(height:40),
+          Text('여행 스타일이나 특이사항 등을 AI에게 편하게 말씀해주세요!'),
+          SizedBox(height:30),
           Text('Give us a little more information about your joruney :)'), 
           SizedBox(height: 10),
           Row(
@@ -344,7 +346,175 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ]
-          )
+          ),
+          //선호하는 숙소 유형
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:[
+              Text('선호하는 숙소 유형: '),
+              Row(
+                children: [
+                  Radio(
+                    value: 0,
+                    groupValue: accommodation,
+                    onChanged: (value) {
+                      setState(() {
+                        accommodation = value!;
+                      });
+                    },
+                  ),
+                  Text('호텔'),
+                ],
+              ),
+              SizedBox(width: 20),
+              Row(
+                children: [
+                  Radio(
+                    value: 1,
+                    groupValue: accommodation,
+                    onChanged: (value) {
+                      setState(() {
+                        accommodation = value!;
+                      });
+                    },
+                  ),
+                  Text('게하'),
+                ],
+              ),
+              SizedBox(width: 20),
+              Row(
+                children: [
+                  Radio(
+                    value: 2,
+                    groupValue: accommodation,
+                    onChanged: (value) {
+                      setState(() {
+                        accommodation = value!;
+                      });
+                    },
+                  ),
+                  Text('리조트'),
+                ],
+              ),
+              SizedBox(width: 20),
+              Row(
+                children: [
+                  Radio(
+                    value: 3,
+                    groupValue: accommodation,
+                    onChanged: (value) {
+                      setState(() {
+                        accommodation = value!;
+                      });
+                    },
+                  ),
+                  Text('Airbnb'),
+                ],
+              ),
+              SizedBox(width: 20),
+            ]
+          ),
+          SizedBox(height: 10),
+          //여행 스타일
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:[
+              Text('여행 스타일: '),
+              Column(
+                children:[
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: travel_style[0],
+                        onChanged: (value) {
+                          setState(() {
+                            travel_style[0] = value!;
+                          });
+                        },
+                      ),
+                      Text('휴양 및 힐링'),
+                    ],
+                  ),
+                  SizedBox(width: 20),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: travel_style[3],
+                        onChanged: (value) {
+                          setState(() {
+                            travel_style[3] = value!;
+                          });
+                        },
+                      ),
+                      Text('가족 여행'),
+                    ],
+                  ),
+                ]
+              ),
+              Column(
+                children:[
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: travel_style[1],
+                        onChanged: (value) {
+                          setState(() {
+                            travel_style[1] = value!;
+                          });
+                        },
+                      ),
+                      Text('기념일'),
+                    ],
+                  ),
+                  SizedBox(width: 20),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: travel_style[4],
+                        onChanged: (value) {
+                          setState(() {
+                            travel_style[4] = value!;
+                          });
+                        },
+                      ),
+                      Text('관광'),
+                    ],
+                  ),
+                ]
+              ),
+              Column(
+                children:[
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: travel_style[2],
+                        onChanged: (value) {
+                          setState(() {
+                            travel_style[2] = value!;
+                          });
+                        },
+                      ),
+                      Text('호캉스'),
+                    ],
+                  ),
+                  SizedBox(width: 20),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: travel_style[5],
+                        onChanged: (value) {
+                          setState(() {
+                            travel_style[5] = value!;
+                          });
+                        },
+                      ),
+                      Text('가족여행'),
+                    ],
+                  ),
+                ]
+              ),
+            ]
+          ),
         ],
       ),
     );
