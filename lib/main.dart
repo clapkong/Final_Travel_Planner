@@ -52,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(
           ['Home', 'Search', 'Maps', 'Favorites'][_selectedIndex],
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.cyan[900]),
         ),
       ),
       body: _pages[_selectedIndex],
@@ -87,10 +88,36 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Home Page',
-        style: TextStyle(fontSize: 24),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    labelText: 'AI Planner에게 여행 계획을 알려주세요!',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.mic),
+                onPressed: () {
+                  // Here you can add functionality to start voice recognition
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('음성 인식이 완료되었습니다.'),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
