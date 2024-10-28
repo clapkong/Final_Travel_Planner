@@ -310,7 +310,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ]
           ),
-          SizedBox(height: 20),
+          Text(date_from.compareTo(date) > 0? '여행 일정을 확인해주세요.': ''),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children:[
