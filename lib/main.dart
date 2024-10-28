@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -516,6 +517,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ]
           ),
+          SizedBox(height: 20),
+          ElevatedButton(
+          child: const Text('여행 계획 만들기!'),
+          onPressed: () {},//TODO: 페이지 연결 방법 만들기
+        ),
         ],
       ),
     );
