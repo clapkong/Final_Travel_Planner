@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.cyan),
         useMaterial3: true,
+        fontFamily: "Pretendard",
       ),
       home: const MyHomePage(),
     );
@@ -99,9 +100,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         children: [
+          
           Row(
             children: [
               Expanded(
@@ -127,8 +129,14 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
+          SizedBox(height:20),
+          Text('Give us a little more information about your joruney :)'), 
+          SizedBox(height: 10),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children:[
+              Text('여행 기간: '),
+              SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () async {
                   final selectedDate = await showDatePicker(
@@ -148,6 +156,7 @@ class _HomePageState extends State<HomePage> {
                   flag_from==false? 'From':"${date_from.year.toString()}-${date_from.month.toString().padLeft(2, '0')}-${date_from.day.toString().padLeft(2, '0')}",
                 ),
               ),
+              SizedBox(width: 20),
               ElevatedButton(
                 onPressed: () async {
                   final selectedDate = await showDatePicker(
@@ -169,6 +178,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ]
           ),
+          SizedBox(height: 20),
         ],
       ),
     );
