@@ -157,6 +157,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
+          Text('여행 스타일, 특이사항, 선호하는 교통수단, 숙소 등을 편하게 말씀해주세요!'),
           SizedBox(height:40),
           Text('Give us a little more information about your joruney :)'), 
           SizedBox(height: 10),
@@ -260,7 +261,7 @@ class _HomePageState extends State<HomePage> {
           ),
           Text(address),
           //여행 기간
-          SizedBox(height:20),
+          SizedBox(height:10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children:[
@@ -272,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                     context: context,
                     initialDate: date_from,
                     firstDate: DateTime(2000),
-                    lastDate: DateTime.now(),
+                    lastDate: DateTime(3000),
                   );
                   if(selectedDate != null){
                     setState((){
@@ -292,7 +293,7 @@ class _HomePageState extends State<HomePage> {
                     context: context,
                     initialDate: date,
                     firstDate: DateTime(2000),
-                    lastDate: DateTime.now(),
+                    lastDate: DateTime(3000),
                   );
                   if(selectedDate != null){
                     setState((){
