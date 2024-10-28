@@ -1,6 +1,6 @@
 # travel_planner
 
-A new Flutter project.
+This project is Travel Optimizer for Applied Mobile Programming(GAI3008) by Soobin Park.
 
 ## Getting Started
 
