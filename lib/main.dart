@@ -83,8 +83,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  DateTime date_from = DateTime.now();
+  DateTime date = DateTime.now();
+  bool flag_from = false;
+  bool flag = false;
 
   @override
   Widget build(BuildContext context) {
@@ -117,15 +127,62 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
+          Row(
+            children:[
+              ElevatedButton(
+                onPressed: () async {
+                  final selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: date_from,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime.now(),
+                  );
+                  if(selectedDate != null){
+                    setState((){
+                      date_from = selectedDate;
+                    });
+                    flag_from = true;
+                  }
+                },
+                child: Text(
+                  flag_from==false? 'From':"${date_from.year.toString()}-${date_from.month.toString().padLeft(2, '0')}-${date_from.day.toString().padLeft(2, '0')}",
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: date,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime.now(),
+                  );
+                  if(selectedDate != null){
+                    setState((){
+                      date = selectedDate;
+                    });
+                    flag = true;
+                  }
+                },
+                child: Text(
+                  flag==false? 'To':"${date.year.toString()}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+                ),
+              ),
+            ]
+          ),
         ],
       ),
     );
   }
 }
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -137,9 +194,14 @@ class SearchPage extends StatelessWidget {
   }
 }
 
-class MapsPage extends StatelessWidget {
+class MapsPage extends StatefulWidget {
   const MapsPage({super.key});
 
+  @override
+  State<MapsPage> createState() => _MapsPageState();
+}
+
+class _MapsPageState extends State<MapsPage> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -151,9 +213,14 @@ class MapsPage extends StatelessWidget {
   }
 }
 
-class FavoritesPage extends StatelessWidget {
+class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
 
+  @override
+  State<FavoritesPage> createState() => _FavoritesPageState();
+}
+
+class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     return Center(
