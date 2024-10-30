@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   csc_picker: ^0.2.7
   google_maps_flutter: ^2.9.0
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +69,8 @@ flutter:
     - assets/images/travel_5.jpg
     - assets/images/travel_6.jpg
     - assets/images/travel_7.jpg
+    - assets/images/carousel_1.jpg
+    - assets/images/carousel_2.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

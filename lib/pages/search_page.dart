@@ -142,6 +142,9 @@ class _SearchPageState extends State<SearchPage> {
                         numPeople: num_people,
                         date: date,
                         type: accommodation_labels[accommodation],
+                        travel_style: travel_style,
+                        travel_style_labels: travel_style_labels,
+                        country:country,
                       ),
                     ),
                   );
