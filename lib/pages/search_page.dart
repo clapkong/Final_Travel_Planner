@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_planner/pages/results_page.dart';
 
 class SearchPage extends StatefulWidget {
   //final String command; 
@@ -29,6 +30,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  late String date;
+  late String country;
+  late String state;
   late int num_people;
   late double budget;
   late int accommodation;
@@ -40,17 +44,24 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    date = '${widget.departure.year.toString()}.${widget.departure.month.toString().padLeft(2, '0')}.${widget.departure.day.toString().padLeft(2, '0')} - ${widget.departure.year.toString()}.${widget.arrival.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')}';
+    country = widget.country;
+    state = widget.state;
     num_people = widget.num_people;
     budget = widget.budget; // 여기서 budget, num_people, accommodation, travel_style 초기화
     accommodation = widget.accommodation;
     travel_style = widget.travel_style;
   }
 
+//ChatGPT로 생성한 가상 관광지
   final List<TravelPlan> travel_plans = [
-    TravelPlan(name: 'Travel Plan Name', year: 2021, price: 55000, seats: 4, date: '2023-11-01'),
-    TravelPlan(name: 'Travel Plan Name', year: 2020, price: 41000, seats: 5, date: '2023-10-15'),
-    TravelPlan(name: 'Travel Plan Name', year: 2019, price: 39000, seats: 4, date: '2023-09-05'),
-    TravelPlan(name: 'Travel Plan Name', year: 2021, price: 57000, seats: 4, date: '2023-12-20'),
+    TravelPlan(img: 'assets/images/travel_1.jpg', hotel: '신라', keyword: '자연적', name: "#1", price: 0.0, summary: '사르바 항구 산책, 미라노 궁 투어, 라펠라 숲 트레킹'),
+    TravelPlan(img: 'assets/images/travel_2.jpg', hotel: '메리어트', keyword: '평온함', name: "#2", price: 10.0, summary: '아르보 바자 탐방, 실비아 호수 유람, 에덴 교회 방문'),
+    TravelPlan(img: 'assets/images/travel_3.jpg', hotel: '조선', keyword: '예술적', name: "#3", price: 40.0, summary: '나리아 미술관, 로미타 정원 산책, 라빈다 성 투어'),
+    TravelPlan(img: 'assets/images/travel_4.jpg', hotel: '하얏트', keyword: '여유로움', name: "#4", price: 30.0, summary: '이솔리 해변 수영, 루체르 전망대, 파르니 마을 체험'),
+    TravelPlan(img: 'assets/images/travel_5.jpg', hotel: '쉐라톤', keyword: '향토적', name: "#5", price: 15.0, summary: '라코나 시장 구경, 플로렌 언덕 트레킹, 바르미 오솔길 산책'),
+    TravelPlan(img: 'assets/images/travel_6.jpg', hotel: '콘래드', keyword: '고풍적', name: "#6", price: 10.0, summary: '페르노 성 방문, 사피르 정원 산책, 로살리 박물관'),
+    TravelPlan(img: 'assets/images/travel_7.jpg', hotel: '한화', keyword: '역사적', name: "#7", price: 20.0, summary: '엘토아 해양 박물관, 나리아 성벽 투어, 세라노 거리 예술'),
   ];
 
   
@@ -75,7 +86,7 @@ class _SearchPageState extends State<SearchPage> {
                                 Text('${widget.state}, ${widget.country}', style: TextStyle(fontSize: 14.0)),]), SizedBox(height:5), 
                     Row(children:[Icon(Icons.calendar_today, color: Colors.grey),
                                 SizedBox(width: 8.0),
-                                Text('${widget.departure.year.toString()}.${widget.departure.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')} - ${widget.departure.year.toString()}.${widget.arrival.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')}', style: TextStyle(fontSize: 14.0)),
+                                Text('${widget.departure.year.toString()}.${widget.departure.month.toString().padLeft(2, '0')}.${widget.departure.day.toString().padLeft(2, '0')} - ${widget.departure.year.toString()}.${widget.arrival.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')}', style: TextStyle(fontSize: 14.0)),
                               ])],),
           trailing: Icon(
             _customTileExpanded
@@ -118,7 +129,24 @@ class _SearchPageState extends State<SearchPage> {
           child: ListView.builder(
             itemCount: travel_plans.length,
             itemBuilder: (context, index) {
-              return TravelPlanCard(travel_plan: travel_plans[index]);
+              return InkWell(
+                onTap: () {
+                  // 여기에 아이템을 클릭했을 때 실행할 동작을 정의하세요.
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ResultsPage(
+                        travelPlan: travel_plans[index],
+                        state: state,
+                        budget: budget,
+                        numPeople: num_people,
+                        date: date,
+                        type: accommodation_labels[accommodation],
+                      ),
+                    ),
+                  );
+                },
+              child: TravelPlanCard(travel_plan: travel_plans[index], state: state, budget: budget, num_people: num_people, date: date, type: accommodation_labels[accommodation]),);
             },
           ),  
         ),
@@ -130,8 +158,13 @@ class _SearchPageState extends State<SearchPage> {
 
 class TravelPlanCard extends StatelessWidget {
   final TravelPlan travel_plan;
+  final String date;
+  final String state;
+  final int num_people;
+  final double budget;
+  final String type;
 
-  TravelPlanCard({required this.travel_plan});
+  TravelPlanCard({required this.travel_plan, required this.state, required this.budget, required this.num_people, required this.date, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -145,8 +178,10 @@ class TravelPlanCard extends StatelessWidget {
             Container(
               width: 100,
               height: 100,
-              color: Colors.grey[300], // 임시로 색상을 사용해 이미지 위치 표시
-              child: Icon(Icons.directions_car, size: 50),
+              child: Image.asset(
+                travel_plan.img, // 이미지 경로 사용
+                fit: BoxFit.cover, // 이미지가 잘 맞도록 설정
+              ),
             ),
             SizedBox(width: 16),
             // 오른쪽 정보 영역
@@ -158,36 +193,40 @@ class TravelPlanCard extends StatelessWidget {
                   Row(
                     children: [
                       Chip(
-                        label: Text('Small'),
-                        avatar: Icon(Icons.person, size: 16),
+                        label: Text('${num_people}명'),
+                        avatar: Icon(Icons.person, size: 14),
                       ),
                       SizedBox(width: 8),
                       Chip(
-                        label: Text('${travel_plan.seats} Seats'),
-                        avatar: Icon(Icons.hotel, size: 16),
+                        label: Text('${travel_plan.hotel} ${type}'),
+                        avatar: Icon(Icons.hotel, size: 14),
                       ),
                       SizedBox(width: 8),
                       Chip(
-                        label: Text('Auto'),
-                        avatar: Icon(Icons.tag, size: 16),
+                        label: Text('${travel_plan.keyword}'),
+                        avatar: Icon(Icons.tag, size: 14),
                       ),
                     ],
                   ),
                   SizedBox(height: 8),
                   // 여행 계획 정보 텍스트
-                  Text(
-                    travel_plan.name,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text('Trip to ${state} ${travel_plan.name}',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    '${travel_plan.price} ₩',
-                    style: TextStyle(fontSize: 16, color: Colors.blueGrey),
+                    '₩ ${(budget+travel_plan.price)/2} 만원',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Date: ${travel_plan.date}',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    '${travel_plan.summary}',
+                    style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    'Date: ${date}',
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
               ),
@@ -200,18 +239,20 @@ class TravelPlanCard extends StatelessWidget {
 }
 
 class TravelPlan {
+  final String img;
+  final String hotel;
+  final String keyword;
   final String name;
-  final int year;
-  final int price;
-  final int seats;
-  final String date;
+  final double price;
+  final String summary;
 
   TravelPlan({
+    required this.img,
+    required this.hotel,
+    required this.keyword,
     required this.name,
-    required this.year,
     required this.price,
-    required this.seats,
-    required this.date,
+    required this.summary,
   });
 }
 
