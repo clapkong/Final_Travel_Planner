@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:travel_planner/pages/maps_page.dart';
+import 'package:travel_planner/pages/search_page.dart';
+import 'package:travel_planner/pages/favorites_page.dart';
+import 'package:travel_planner/pages/results_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -523,126 +527,6 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {},//TODO: 페이지 연결 방법 만들기
         ),
         ],
-      ),
-    );
-  }
-}
-
-class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
-
-  @override
-  State<SearchPage> createState() => _SearchPageState();
-}
-
-class _SearchPageState extends State<SearchPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Search Page',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-class MapsPage extends StatefulWidget {
-  const MapsPage({super.key});
-
-  @override
-  State<MapsPage> createState() => _MapsPageState();
-}
-
-class _MapsPageState extends State<MapsPage> {
-  double _currentScale = 1.0;
-  final TransformationController _transformationController = TransformationController();
-
-  void _zoomIn() {
-    setState(() {
-      _currentScale += 0.2;
-      _updateTransformation();
-    });
-  }
-
-  void _zoomOut() {
-    setState(() {
-      if (_currentScale > 1.0) {
-        _currentScale -= 0.2;
-        _updateTransformation();
-      }
-    });
-  }
-
-   void _updateTransformation() {
-    // Prevent zooming out beyond the initial size and ensure image stays within bounds
-    _transformationController.value = Matrix4.identity()
-      ..scale(_currentScale)
-      ..translate(
-        _transformationController.value.getTranslation().x.clamp(
-            -MediaQuery.of(context).size.width * (_currentScale - 1),
-            MediaQuery.of(context).size.width * (_currentScale - 1)),
-        _transformationController.value.getTranslation().y.clamp(
-            -MediaQuery.of(context).size.height * (_currentScale - 1),
-            MediaQuery.of(context).size.height * (_currentScale - 1)),
-      );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Stack(
-        children: [
-          InteractiveViewer(
-            transformationController: _transformationController,
-            boundaryMargin: EdgeInsets.zero, // Increased boundary margin to prevent image from going out of bounds
-            minScale: 1.0, // Set minimum scale to prevent zooming out too much
-            child:Image.asset(
-              '../assets/images/map.png',
-              fit: BoxFit.cover,
-              width: MediaQuery.of(context).size.width * 2,
-              height: MediaQuery.of(context).size.height * 2,
-            ),
-          ),
-          Positioned(
-            right: 16.0,
-            bottom: 16.0,
-            child: Column(
-              children: [
-                FloatingActionButton(
-                  heroTag: "zoomIn",
-                  onPressed: _zoomIn,
-                  child: Icon(Icons.add),
-                ),
-                SizedBox(height: 10),
-                FloatingActionButton(
-                  heroTag: "zoomOut",
-                  onPressed: _zoomOut,
-                  child: Icon(Icons.remove),
-                ),
-              ],
-            ),
-          ),
-        ]
-      )
-    );
-  }
-}
-
-class FavoritesPage extends StatefulWidget {
-  const FavoritesPage({super.key});
-
-  @override
-  State<FavoritesPage> createState() => _FavoritesPageState();
-}
-
-class _FavoritesPageState extends State<FavoritesPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Favorites Page',
-        style: TextStyle(fontSize: 24),
       ),
     );
   }
