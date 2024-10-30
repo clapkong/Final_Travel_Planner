@@ -2,44 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:csc_picker/csc_picker.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Function(DateTime, DateTime, String, String, String, int, double, int, List<bool>) onSearch;
+  
+  HomePage({required this.onSearch});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  DateTime date_from = DateTime.now();
+  DateTime departure = DateTime.now();
   DateTime date = DateTime.now();
   bool flag_from = false;
   bool flag = false;
-  String countryValue = "";
-  String stateValue = "";
-  String cityValue = "";
+  String country = "";
+  String state = "";
+  String city = "";
   String address = "";
 
-  int _counter = 1;
-  double _currentSliderValue = 20;
+  int _num_people = 1;
+  double _budget = 20;
   int accommodation = 0;
   List<bool> travel_style = [false, false, false, false, false, false];
 
   void _incrementCounter() {
     setState(() {
-      _counter++;
+      _num_people++;
     });
   }
 
   void _decrementCounter() {
     setState(() {
-      if (_counter > 0) {
-        _counter--;
+      if (_num_people > 0) {
+        _num_people--;
       }
     });
   }
 
   void _updateAddress() {
                 setState(() {
-                  address = "$cityValue, $stateValue, $countryValue";
+                  address = "$city, $state, $country";
                 });
               }
 
@@ -148,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                   onCountryChanged: (value) {
                     setState(() {
                       ///store value in country variable
-                      countryValue = value;
+                      country = value;
                       _updateAddress();
                     });
                   },
@@ -157,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                   onStateChanged: (value) {
                     setState(() {
                       ///store value in state variable
-                      stateValue = value ?? '';
+                      state = value ?? '';
                       _updateAddress();
                     });
                   },
@@ -166,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                   onCityChanged: (value) {
                     setState(() {
                       ///store value in city variable
-                      cityValue = value ?? '';
+                      city = value ?? '';
                       _updateAddress();
                     });
                   },
@@ -189,19 +191,19 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () async {
                   final selectedDate = await showDatePicker(
                     context: context,
-                    initialDate: date_from,
+                    initialDate: departure,
                     firstDate: DateTime(2000),
                     lastDate: DateTime(3000),
                   );
                   if(selectedDate != null){
                     setState((){
-                      date_from = selectedDate;
+                      departure = selectedDate;
                     });
                     flag_from = true;
                   }
                 },
                 child: Text(
-                  flag_from==false? 'From':"${date_from.year.toString()}-${date_from.month.toString().padLeft(2, '0')}-${date_from.day.toString().padLeft(2, '0')}",
+                  flag_from==false? 'From':"${departure.year.toString()}-${departure.month.toString().padLeft(2, '0')}-${departure.day.toString().padLeft(2, '0')}",
                 ),
               ),
               SizedBox(width: 20),
@@ -226,7 +228,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ]
           ),
-          Text(date_from.compareTo(date) > 0? '여행 일정을 확인해주세요.': ''),
+          Text(departure.compareTo(date) > 0? '여행 일정을 확인해주세요.': ''),
           SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -238,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: _decrementCounter,
               ),
               Text(
-                '$_counter',
+                '$_num_people',
               ),
               IconButton(
                 icon: Icon(Icons.add),
@@ -250,15 +252,15 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children:[
               Text('예산(만원):  '),
-              Text("${_currentSliderValue} "),
+              Text("${_budget} "),
               Slider(
-                value: _currentSliderValue,
+                value: _budget,
                 max: 2000,
                 divisions: 2000,
-                label: _currentSliderValue.round().toString(),
+                label: _budget.round().toString(),
                 onChanged: (double value) {
                   setState(() {
-                    _currentSliderValue = value;
+                    _budget = value;
                   });
                 },
               ),
@@ -434,11 +436,15 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(height: 20),
           ElevatedButton(
-          child: const Text('여행 계획 만들기!'),
-          onPressed: () {},//TODO: 페이지 연결 방법 만들기
+            child: const Text('여행 계획 만들기!'),
+            onPressed: () {
+              widget.onSearch(departure, date, country, state, city, _num_people, _budget, accommodation, travel_style);
+            },
         ),
         ],
       ),
     );
   }
 }
+
+

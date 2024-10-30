@@ -38,14 +38,97 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  String _command = ""; //TODO
+  DateTime _departure = DateTime.now();
+  DateTime _arrival = DateTime.now();
+  String _country ="";
+  String _state = "";
+  String _city = "";
+  int _num_people = 1;
+  double _budget = 20;
+  int _accommodation = 0;
+  List<bool> _travel_style = [false, false, false, false, false, false];
 
-  static const List<Widget> _pages = <Widget>[
-    HomePage(),
-    SearchPage(),
-    MapsPage(),
-    FavoritesPage(),
-  ];
+  List<Map<String, dynamic>> _favorites = [];
+  final List<Widget> _pages = [];
 
+  @override
+  void initState() {
+    super.initState();
+    // Initialize pages with the HomePage, SearchPage, MapsPage, and FavoritesPage
+    _pages.addAll([
+      HomePage(
+        onSearch: (departure, arrival, country, state, city, num_people, budget, accommodation, travel_style) {
+          // Update state when search is performed
+          setState(() {
+            _departure = departure;
+            _arrival = arrival;
+            _country = country;
+            _state = state;
+            _city = city;
+            _num_people = num_people;
+            _budget = budget;
+            _accommodation = accommodation;
+            _travel_style = travel_style;
+            // Add search result to favorites
+            _favorites.add({
+              'departure': _departure,
+              'arrival': _arrival,
+              'country': _country,
+              'state': _state,
+              'city': _city,
+              'num_people': _num_people,
+              'budget': _budget,
+              'accommodation': _accommodation,
+              'travel_style': _travel_style,
+            });
+          });
+          // Navigate to SearchPage with the provided data
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage(
+              departure: _departure,
+              arrival: _arrival,
+              country: _country,
+              state: _state,
+              city: _city,
+              num_people: _num_people,
+              budget: _budget,
+              accommodation: _accommodation,
+              travel_style: _travel_style,
+              ),
+            ),
+          );
+        },
+      ),
+      SearchPage(
+              departure: _departure,
+              arrival: _arrival,
+              country: _country,
+              state: _state,
+              city: _city,
+              num_people: _num_people,
+              budget: _budget,
+              accommodation: _accommodation,
+              travel_style: _travel_style,
+      ),
+      MapsPage(
+              departure: _departure,
+              arrival: _arrival,
+              country: _country,
+              state: _state,
+              city: _city,
+              num_people: _num_people,
+              budget: _budget,
+              accommodation: _accommodation,
+              travel_style: _travel_style,
+      ),
+      FavoritesPage(favorites: _favorites),
+    ]);
+  }
+
+  // Handle bottom navigation bar item selection
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -62,9 +145,45 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.cyan[900]),
         ),
       ),
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        // Rebuild pages dynamically based on current state
+        children: _pages.map((page) {
+          if (page is SearchPage) {
+            return SearchPage(
+              departure: _departure,
+              arrival: _arrival,
+              country: _country,
+              state: _state,
+              city: _city,
+              num_people: _num_people,
+              budget: _budget,
+              accommodation: _accommodation,
+              travel_style: _travel_style,
+            );
+          } else if (page is MapsPage) {
+            return MapsPage(
+              departure: _departure,
+              arrival: _arrival,
+              country: _country,
+              state: _state,
+              city: _city,
+              num_people: _num_people,
+              budget: _budget,
+              accommodation: _accommodation,
+              travel_style: _travel_style,
+            );
+          } else if (page is FavoritesPage) {
+            return FavoritesPage(favorites: _favorites);
+          }
+          return page;
+        }).toList(),
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.cyan,
+        onTap: _onItemTapped,
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -82,12 +201,13 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Favorites',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
       ),
     );
   }
 }
+
+
+
+
 
 

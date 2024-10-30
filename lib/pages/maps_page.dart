@@ -2,7 +2,28 @@ import 'package:flutter/material.dart';
 
 
 class MapsPage extends StatefulWidget {
-  const MapsPage({super.key});
+  //final String command; 
+  final DateTime departure;
+  final DateTime arrival;
+  final String country;
+  final String state;
+  final String city;
+  final int num_people;
+  final double budget;
+  final int accommodation;
+  final List<bool> travel_style;
+ 
+  MapsPage({
+    required this.departure,
+    required this.arrival,
+    required this.country,
+    required this.state,
+    required this.city,
+    required this.num_people,
+    required this.budget,
+    required this.accommodation,
+    required this.travel_style,
+  });
 
   @override
   State<MapsPage> createState() => _MapsPageState();
@@ -57,6 +78,21 @@ class _MapsPageState extends State<MapsPage> {
               width: MediaQuery.of(context).size.width * 2,
               height: MediaQuery.of(context).size.height * 2,
             ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Display search result data
+              Text('${widget.departure}'),
+              Text('${widget.arrival}'),
+              Text('${widget.country}'),
+              Text('${widget.state}'),
+              Text('${widget.city}'),
+              Text('${widget.num_people}'),
+              Text('${widget.budget}'),
+              Text('${widget.accommodation}'),
+              Text('${widget.travel_style}'),
+            ],
           ),
           Positioned(
             right: 16.0,
