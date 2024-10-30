@@ -14,7 +14,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favorites Page'),
+        title: Text('Favorites', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.cyan[900]),),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Center(
         child: ListView.builder(
