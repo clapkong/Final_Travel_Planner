@@ -32,6 +32,9 @@ class ResultsPage extends StatefulWidget {
 }
 
 class _ResultsPageState extends State<ResultsPage> {
+
+  late dynamic travelPlan;
+
   late String path;
   late String hotel;
   late String keyword;
@@ -52,6 +55,7 @@ class _ResultsPageState extends State<ResultsPage> {
    @override
   void initState() {
     super.initState();
+    travelPlan = widget.travelPlan;
     path = widget.travelPlan.img;
     hotel = widget.travelPlan.hotel;
     keyword = widget.travelPlan.keyword;
@@ -81,7 +85,7 @@ class _ResultsPageState extends State<ResultsPage> {
       ),
       body: Column(
         children: [
-          CarouselWithOverlay(img: path, title: name, country: country, state: state, keyword: keyword, date: date, num_people: num_people, budget: budget, type:type, travel_style: travel_style, travel_style_labels: travel_style_labels),
+          CarouselWithOverlay(img: path, title: name, country: country, state: state, keyword: keyword, date: date, num_people: num_people, budget: budget, type:type, travel_style: travel_style, travel_style_labels: travel_style_labels, travelPlan: travelPlan),
           SizedBox(height: 20),
           Expanded(
             child:ListView(
@@ -569,7 +573,8 @@ class CarouselWithOverlay extends StatefulWidget {
   final String type;
   final List<bool> travel_style;
   final List<String> travel_style_labels;
-  CarouselWithOverlay({required this.img, required this.title, required this.country, required this.state, required this.keyword, required this.date, required this.num_people, required this.budget, required this.type, required this.travel_style, required this.travel_style_labels});
+  final dynamic travelPlan;
+  CarouselWithOverlay({required this.img, required this.title, required this.country, required this.state, required this.keyword, required this.date, required this.num_people, required this.budget, required this.type, required this.travel_style, required this.travel_style_labels, required this.travelPlan});
   @override
   _CarouselWithOverlayState createState() => _CarouselWithOverlayState();
 }
@@ -587,8 +592,9 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
   late final List<bool> travel_style;
   late final List<String> travel_style_labels;
   late final String path;
+  late final dynamic travelPlan;
 
-  void _addFavorite(String path, String title, String country, String state, String keyword, String date, int num_people, double budget, String type, List<bool> travel_style) {
+  void _addFavorite(String path, String title, String country, String state, String keyword, String date, int num_people, double budget, String type, List<bool> travel_style, dynamic travelPlan) {
     setState(() {
       favoritesList.add({
         'title': title,
@@ -601,6 +607,7 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
         'accommodation': type,
         'travel_style': travel_style,
         'path': path,
+        'travelPlan': travelPlan,//favorite page의 card를 눌러서 results_page를 여는 방법을 위해 필요
       });
     });
   }
@@ -619,11 +626,23 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
     travel_style = widget.travel_style;
     travel_style_labels = widget.travel_style_labels;
     path = widget.img;
+    travelPlan = widget.travelPlan;
     imageList = [
       path, //프로필 이미지와 동일한 이미지 carousel에 넣었음
     'assets/images/carousel_1.jpg',
     'assets/images/carousel_2.jpg',
-  ];}
+  ];
+    isFavorite = favoritesList.any((favorite) =>
+      favorite['title'] == title &&
+      favorite['country'] == country &&
+      favorite['state'] == state &&
+      favorite['keyword'] == keyword &&
+      favorite['date'] == date &&
+      favorite['num_people'] == num_people &&
+      favorite['budget'] == budget &&
+      favorite['accommodation'] == type
+    );
+  }
 
   bool isFavorite = false;
 
@@ -683,17 +702,25 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
             ),
             onPressed: () {
               setState(() {
+                if (isFavorite) {
+                  // Remove item from favoritesList
+                  favoritesList.removeWhere((favorite) =>
+                    favorite['title'] == title &&
+                    favorite['country'] == country &&
+                    favorite['state'] == state &&
+                    favorite['keyword'] == keyword &&
+                    favorite['date'] == date &&
+                    favorite['num_people'] == num_people &&
+                    favorite['budget'] == budget &&
+                    favorite['accommodation'] == type
+                  );
+                } else {
+                  // Add item to favoritesList
+                  _addFavorite(path, title, country, state, keyword, date, num_people, budget, type, travel_style, travelPlan);
+                }
+
+                // Toggle the favorite state
                 isFavorite = !isFavorite;
-
-                 _addFavorite(path, title, country, state, keyword, date, num_people, budget, type, travel_style);
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FavoritesPage(favoritesList: favoritesList),
-                  ),
-                );
-                
               });
             },
           ),
