@@ -115,15 +115,9 @@ class _MyHomePageState extends State<MyHomePage> {
               travel_style: _travel_style,
       ),
       MapsPage(
-              departure: _departure,
-              arrival: _arrival,
+              date: '${_departure.year.toString()}.${_departure.month.toString().padLeft(2, '0')}.${_departure.day.toString().padLeft(2, '0')} - ${_arrival.year.toString()}.${_arrival.month.toString().padLeft(2, '0')}.${_arrival.day.toString().padLeft(2, '0')}',
               country: _country,
               state: _state,
-              city: _city,
-              num_people: _num_people,
-              budget: _budget,
-              accommodation: _accommodation,
-              travel_style: _travel_style,
       ),
       FavoritesPage(favoritesList: favoritesList),
     ]);
@@ -157,15 +151,9 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           } else if (page is MapsPage) {
             return MapsPage(
-              departure: _departure,
-              arrival: _arrival,
+              date: '${_departure.year.toString()}.${_departure.month.toString().padLeft(2, '0')}.${_departure.day.toString().padLeft(2, '0')} - ${_arrival.year.toString()}.${_arrival.month.toString().padLeft(2, '0')}.${_arrival.day.toString().padLeft(2, '0')}',
               country: _country,
               state: _state,
-              city: _city,
-              num_people: _num_people,
-              budget: _budget,
-              accommodation: _accommodation,
-              travel_style: _travel_style,
             );
           } else if (page is FavoritesPage) {
             return FavoritesPage(favoritesList: favoritesList);

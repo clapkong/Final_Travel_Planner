@@ -376,11 +376,11 @@ class _ResultsPageState extends State<ResultsPage> {
                 ),
                 FilledButton(
                   onPressed: () {
-                    /*
+                    
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MapsPage()),
-                    );*/
+                      MaterialPageRoute(builder: (context) => MapsPage(date: date, country: country, state: state)),
+                    );
                   },
                   child: Text('지도에서 보기'),
                 ),

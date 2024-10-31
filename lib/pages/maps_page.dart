@@ -5,26 +5,14 @@ import 'package:travel_planner/main.dart';
 
 class MapsPage extends StatefulWidget {
   //final String command; 
-  final DateTime departure;
-  final DateTime arrival;
+  final String date;
   final String country;
   final String state;
-  final String city;
-  final int num_people;
-  final double budget;
-  final int accommodation;
-  final List<bool> travel_style;
  
   MapsPage({
-    required this.departure,
-    required this.arrival,
+    required this.date,
     required this.country,
     required this.state,
-    required this.city,
-    required this.num_people,
-    required this.budget,
-    required this.accommodation,
-    required this.travel_style,
   });
 
   @override
@@ -107,7 +95,7 @@ class _MapsPageState extends State<MapsPage> {
                               children: [
                                 Icon(Icons.calendar_today, color: Colors.grey),
                                 SizedBox(width: 8.0),
-                                Text('${widget.departure.year.toString()}.${widget.departure.month.toString().padLeft(2, '0')}.${widget.departure.day.toString().padLeft(2, '0')} - ${widget.departure.year.toString()}.${widget.arrival.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')}', style: TextStyle(fontSize: 14.0)),
+                                Text(widget.date, style: TextStyle(fontSize: 14.0)),
                               ],
                             ),
                           ],
