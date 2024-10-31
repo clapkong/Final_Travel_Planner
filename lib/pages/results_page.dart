@@ -708,7 +708,6 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
                     favorite['title'] == title &&
                     favorite['country'] == country &&
                     favorite['state'] == state &&
-                    favorite['keyword'] == keyword &&
                     favorite['date'] == date &&
                     favorite['num_people'] == num_people &&
                     favorite['budget'] == budget &&
