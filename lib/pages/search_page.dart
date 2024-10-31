@@ -218,7 +218,7 @@ class TravelPlanCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    '₩ ${(budget+travel_plan.price)/2} 만원',
+                    '₩ ${(budget+travel_plan.price)/2} 만원',//계산 결과가 budget과 어느정도 비슷하나, 음수가 나오지 않게 하기 위해 랜덤하게 만든 임의의 함수.
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 4),

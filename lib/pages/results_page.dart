@@ -81,12 +81,271 @@ class _ResultsPageState extends State<ResultsPage> {
         children: [
           CarouselWithOverlay(img: path, title: name, country: country, state: state, keyword: keyword, date: date, num_people: num_people, budget: budget, type:type, travel_style: travel_style, travel_style_labels: travel_style_labels),
           SizedBox(height: 20),
-          Text(
-            'This is a text below the carousel', //hotel, summary, price, mappage navigation
-            style: TextStyle(fontSize: 16),
-          ),
+          Expanded(
+            child:ListView(
+              padding: const EdgeInsets.all(16.0),
+              children:[
+                Stack(
+                  children:[
+                    Positioned(
+                      left: 20,
+                      top: 0,
+                      bottom: 0,
+                      child: DashedLine(),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ScheduleItem(
+                          index: 1,
+                          time: '10:00 - 11:30',
+                          title: 'Hotel Check-in',
+                          icons: [
+                            Icons.add,
+                            Icons.image,
+                            Icons.image,
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        ScheduleItem(
+                          index: 2,
+                          time: '11:30 - 12:30',
+                          title: 'Lunch',
+                          location: 'Seoul, Jong-rogu 483',
+                          subwayInfo: '4 Line, Exit 4 Dongdaemun Station',
+                          cost: '40,000 ₩',
+                          icons: [
+                            Icons.add,
+                            Icons.image,
+                            Icons.image,
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        ScheduleItem(
+                          index: 3,
+                          time: '13:00 - 14:00',
+                          title: 'Visit Museum',
+                          location: 'National Museum of Korea',
+                          icons: [
+                            Icons.add,
+                            Icons.image,
+                            Icons.image,
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        ScheduleItem(
+                          index: 4,
+                          time: '15:00 - 16:00',
+                          title: 'Coffee Break',
+                          location: 'Cafe Bene, Seoul',
+                          cost: '10,000 ₩',
+                          icons: [
+                            Icons.add,
+                            Icons.image,
+                            Icons.image,
+                          ],
+                        ),
+                      ],
+                    ),
+                    
+                  ]
+                )
+              ]
+            )
+          )
         ],
       ),
+      bottomNavigationBar: BottomAppBar(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '예상 금액: ₩ ${(budget+price)/2} 만원',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                FilledButton(
+                  onPressed: () {
+                  },
+                  child: Text('지도에서 보기'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                  },
+                  child: Text('선택하기'),
+                ),
+              ],
+            ),
+          ),
+        ),
+    );
+  }
+}
+
+class DashedLine extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double dashWidth = 4;
+        double dashSpace = 4;
+        final double dashCount = constraints.constrainHeight() / (dashWidth + dashSpace);
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(dashCount.floor(), (index) =>
+              SizedBox(
+                width: 2,
+                height: dashWidth,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.grey),
+                ),
+              ),
+            ),
+        );
+      },
+    );
+  }
+}
+
+class ScheduleItem extends StatelessWidget {
+  final int index;
+  final String time;
+  final String title;
+  final String? location;
+  final String? subwayInfo;
+  final String? cost;
+  final List<IconData> icons;
+
+  const ScheduleItem({
+    required this.index,
+    required this.time,
+    required this.title,
+    this.location,
+    this.subwayInfo,
+    this.cost,
+    required this.icons,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 40,
+          child: Center(
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blue,
+              ),
+              child: Center(
+                child: Text(
+                  index.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                time,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                      if (location != null) ...[
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(Icons.location_on),
+                            SizedBox(width: 8),
+                            Expanded(child: Text(location!)),
+                          ],
+                        ),
+                      ],
+                      if (subwayInfo != null) ...[
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(Icons.directions_subway),
+                            SizedBox(width: 8),
+                            Expanded(child: Text(subwayInfo!)),
+                          ],
+                        ),
+                      ],
+                      if (cost != null) ...[
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(Icons.attach_money),
+                            SizedBox(width: 8),
+                            Text(cost!),
+                          ],
+                        ),
+                      ],
+                      SizedBox(height: 16),
+                      Row(
+                        children: icons
+                            .map((icon) => Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                  child: IconButton(
+                                    icon: Icon(icon),
+                                    onPressed: () {},
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
