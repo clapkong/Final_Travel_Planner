@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:travel_planner/pages/home_page.dart';
+import 'package:travel_planner/main.dart';
 
 
 class MapsPage extends StatefulWidget {
@@ -89,7 +91,7 @@ class _MapsPageState extends State<MapsPage> {
                           children: [
                             Row(
                               children: [
-                                Text('Wonderful Trip to ${widget.state}', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,)),
+                                Text('Trip to ${widget.state}', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,)),
                               ],
                             ),
                             SizedBox(height: 8.0),
@@ -111,7 +113,15 @@ class _MapsPageState extends State<MapsPage> {
                           ],
                         ),
                       ),
-                      Icon(Icons.edit, color: Colors.black),
+                      IconButton(
+                        icon: Icon(Icons.edit, color: Colors.black),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MyHomePage()),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ],

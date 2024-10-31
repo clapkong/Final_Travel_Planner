@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/pages/results_page.dart';
+import 'package:travel_planner/pages/home_page.dart';
+import 'package:travel_planner/main.dart';
 
 class SearchPage extends StatefulWidget {
   //final String command; 
@@ -88,10 +90,22 @@ class _SearchPageState extends State<SearchPage> {
                                 SizedBox(width: 8.0),
                                 Text('${widget.departure.year.toString()}.${widget.departure.month.toString().padLeft(2, '0')}.${widget.departure.day.toString().padLeft(2, '0')} - ${widget.departure.year.toString()}.${widget.arrival.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')}', style: TextStyle(fontSize: 14.0)),
                               ])],),
-          trailing: Icon(
-            _customTileExpanded
-                ? Icons.arrow_drop_down_circle
-                : Icons.arrow_drop_down,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.edit, color: Colors.grey),
+                onPressed: () {
+                  Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MyHomePage()),
+                          );
+                },
+              ),
+              Icon(
+                _customTileExpanded ? Icons.arrow_drop_down_circle : Icons.arrow_drop_down,
+              ),
+            ],
           ),
           children: <Widget>[
             ListTile(title: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/pages/maps_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:travel_planner/main.dart';
 
 class ResultsPage extends StatefulWidget {
   final dynamic travelPlan;
@@ -170,6 +171,11 @@ class _ResultsPageState extends State<ResultsPage> {
                 ),
                 FilledButton(
                   onPressed: () {
+                    /*
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MapsPage()),
+                    );*/
                   },
                   child: Text('지도에서 보기'),
                 ),
