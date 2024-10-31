@@ -7,6 +7,8 @@ import 'package:travel_planner/pages/favorites_page.dart';
 import 'package:travel_planner/pages/results_page.dart';
 import 'package:travel_planner/pages/home_page.dart';
 
+List<Map<String, dynamic>> favoritesList = [];
+
 void main() {
   runApp(const MyApp());
 }
@@ -49,7 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
   int _accommodation = 0;
   List<bool> _travel_style = [false, false, false, false, false, false];
 
-  List<Map<String, dynamic>> _favorites = [];
   final List<Widget> _pages = [];
 
   @override
@@ -124,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
               accommodation: _accommodation,
               travel_style: _travel_style,
       ),
-      FavoritesPage(favorites: _favorites),
+      FavoritesPage(favoritesList: favoritesList),
     ]);
   }
 
@@ -167,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
               travel_style: _travel_style,
             );
           } else if (page is FavoritesPage) {
-            return FavoritesPage(favorites: _favorites);
+            return FavoritesPage(favoritesList: favoritesList);
           }
           return page;
         }).toList(),
