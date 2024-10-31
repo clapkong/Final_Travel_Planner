@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
             _accommodation = accommodation;
             _travel_style = travel_style;
             // Add search result to favorites
-            _favorites.add({
+            /*_favorites.add({
               'departure': _departure,
               'arrival': _arrival,
               'country': _country,
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'budget': _budget,
               'accommodation': _accommodation,
               'travel_style': _travel_style,
-            });
+            });*/
           });
           // Navigate to SearchPage with the provided data
           Navigator.push(
