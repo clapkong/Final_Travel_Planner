@@ -32,28 +32,10 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late String date;
-  late String country;
-  late String state;
-  late int num_people;
-  late double budget;
-  late int accommodation;
-  late List<bool> travel_style;
   bool _customTileExpanded = false;
   List<String> accommodation_labels = ['호텔', '게스트하우스', '리조트', 'Airbnb'];
   List<String> travel_style_labels = ['휴양 및 힐링', '기념일', '호캉스', '가족여행', '관광','역사 탐방'];
 
-  @override
-  void initState() {
-    super.initState();
-    date = '${widget.departure.year.toString()}.${widget.departure.month.toString().padLeft(2, '0')}.${widget.departure.day.toString().padLeft(2, '0')} - ${widget.departure.year.toString()}.${widget.arrival.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')}';
-    country = widget.country;
-    state = widget.state;
-    num_people = widget.num_people;
-    budget = widget.budget; // 여기서 budget, num_people, accommodation, travel_style 초기화
-    accommodation = widget.accommodation;
-    travel_style = widget.travel_style;
-  }
 
 //ChatGPT로 생성한 가상 관광지
   final List<TravelPlan> travel_plans = [
@@ -66,10 +48,15 @@ class _SearchPageState extends State<SearchPage> {
     TravelPlan(img: 'assets/images/travel_7.jpg', hotel: '한화', keyword: '역사적', name: "#7", price: 20.0, summary: '엘토아 해양 박물관, 나리아 성벽 투어, 세라노 거리 예술'),
   ];
 
-  
-
   @override
   Widget build(BuildContext context) {
+    String date = '${widget.departure.year.toString()}.${widget.departure.month.toString().padLeft(2, '0')}.${widget.departure.day.toString().padLeft(2, '0')} - ${widget.departure.year.toString()}.${widget.arrival.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')}';
+    String country = widget.country;
+    String state = widget.state;
+    int num_people = widget.num_people;
+    double budget = widget.budget; // 여기서 budget, num_people, accommodation, travel_style 초기화
+    int accommodation = widget.accommodation;
+    List<bool> travel_style = widget.travel_style;
     return Scaffold(
       appBar: AppBar(
         title: Text('Search Page', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.cyan[900]),),
@@ -232,7 +219,7 @@ class TravelPlanCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    '₩ ${(budget+travel_plan.price)/2} 만원',//계산 결과가 budget과 어느정도 비슷하나, 음수가 나오지 않게 하기 위해 랜덤하게 만든 임의의 함수.
+                    '₩ ${(budget*0.8+travel_plan.price*0.2).round()} 만원',//계산 결과가 budget과 어느정도 비슷하나, 음수가 나오지 않게 하기 위해 랜덤하게 만든 임의의 함수.
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 4),
@@ -272,4 +259,3 @@ class TravelPlan {
     required this.summary,
   });
 }
-

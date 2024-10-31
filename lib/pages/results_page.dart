@@ -163,7 +163,7 @@ class _ResultsPageState extends State<ResultsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '예상 금액: ₩ ${(budget+price)/2} 만원',
+                  '예상 금액: ₩ ${(budget*0.8 + price*0.2).round()} 만원',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -450,7 +450,7 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
         Positioned(
           top: 10.0,
           left: 10.0,
-          child:Text("# ${keyword}", style:TextStyle(color: Colors.white, fontSize: 10.0))
+          child:Text("# ${keyword}", style:TextStyle(color: Colors.white, fontSize: 12.0))
         ),
         Positioned(
           bottom: 16.0,
