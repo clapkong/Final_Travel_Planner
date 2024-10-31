@@ -233,7 +233,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ]
             ),
-            Text(departure.compareTo(date) > 0? '여행 일정을 확인해주세요.': ''),
+            Text(departure.compareTo(date) > 0? '여행 일정을 확인해주세요.': '', style:TextStyle(color: Colors.red)),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -443,7 +443,16 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               child: const Text('여행 계획 만들기!'),
               onPressed: () {
-                widget.onSearch(departure, date, country, state, city, _num_people, _budget, accommodation, travel_style);
+                if (departure.compareTo(date) > 0){
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("출발 일자와 도착 일자를 확인해주세요.")),
+                    );
+                  });
+                }else{
+                  widget.onSearch(departure, date, country, state, city, _num_people, _budget, accommodation, travel_style);
+                }
+                
               },
           ),
           ],
