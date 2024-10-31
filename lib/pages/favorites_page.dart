@@ -9,6 +9,7 @@ class FavoritesPage extends StatefulWidget {
   @override
   State<FavoritesPage> createState() => _FavoritesPageState();
 }
+
 class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/images/carousel_1.jpg'),
+                        image: AssetImage('${favorite['path']}'),
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
                           Colors.black.withOpacity(0.35),
@@ -60,7 +61,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${favorite['title']}',
+                            'Trip to ${favorite['state']} ${favorite['title']}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16.0,
@@ -68,17 +69,25 @@ class _FavoritesPageState extends State<FavoritesPage> {
                             ),
                           ),
                           SizedBox(height: 4.0),
-                          Text(
-                            'Departure date: ${favorite['date']}',
-                            style: TextStyle(color: Colors.white),
+                          Row(
+                            children:[
+                              Icon(Icons.location_on, color: Colors.grey),
+                              SizedBox(width: 8.0),
+                              Text(
+                            '${favorite['state']}, ${favorite['country']}',
+                            style: TextStyle(color: Colors.white, fontSize:14),
                           ),
-                          Text(
-                            'Arrival date: ${favorite['date']}',
-                            style: TextStyle(color: Colors.white),
+                            ]
                           ),
-                          Text(
-                            'Number of people: ${favorite['num_people']}',
-                            style: TextStyle(color: Colors.white),
+                          Row(
+                            children:[
+                              Icon(Icons.calendar_today, color: Colors.grey),
+                              SizedBox(width: 8.0),
+                              Text(
+                              '${favorite['date']}',
+                                style: TextStyle(color: Colors.white, fontSize:14),
+                              ),
+                            ]
                           ),
                         ],
                       ),
@@ -93,5 +102,3 @@ class _FavoritesPageState extends State<FavoritesPage> {
     );
   }
 }
-
-/*'Search query: ${favorite['country']}, ${favorite['state']}, ${favorite['city']}'*/
