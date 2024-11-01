@@ -454,7 +454,7 @@ class ScheduleItem extends StatelessWidget {
               height: 20,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.blue,
+                color: Colors.cyan,
               ),
               child: Center(
                 child: Text(
@@ -792,7 +792,7 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
                 children:[
                   Icon(Icons.info_outline, color: Colors.grey),
                   SizedBox(width: 8.0),
-                  Text('More informations', style: TextStyle(fontSize: 14.0, color: Colors.white)),])
+                  Text('More information', style: TextStyle(fontSize: 14.0, color: Colors.white)),])
             )
           ),
         ),

@@ -22,6 +22,7 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
   double _currentScale = 1.0;
   final TransformationController _transformationController = TransformationController();
+  final DraggableScrollableController sheetController = DraggableScrollableController();
 
   void _zoomIn() {
     setState(() {
@@ -130,21 +131,6 @@ class _MapsPageState extends State<MapsPage> {
                     height: MediaQuery.of(context).size.height * 2,
                   ),
                 ),
-                /*Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Display search result data
-                    Text('${widget.departure}'),
-                    Text('${widget.arrival}'),
-                    Text('${widget.country}'),
-                    Text('${widget.state}'),
-                    Text('${widget.city}'),
-                    Text('${widget.num_people}'),
-                    Text('${widget.budget}'),
-                    Text('${widget.accommodation}'),
-                    Text('${widget.travel_style}'),
-                  ],
-                ),*/
                 Positioned(
                   right: 16.0,
                   bottom: 16.0,
@@ -166,7 +152,7 @@ class _MapsPageState extends State<MapsPage> {
                 ),
               ]
             )
-          )
+          ),
         ]
       )
     );
