@@ -811,7 +811,7 @@ class ScheduleItem extends StatelessWidget {
               height: 20,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.cyan,
+                color: Colors.cyan.shade900,
               ),
               child: Center(
                 child: Text(
@@ -835,6 +835,7 @@ class ScheduleItem extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  color: Colors.cyan[900]
                 ),
               ),
               SizedBox(height: 8),
@@ -855,7 +856,7 @@ class ScheduleItem extends StatelessWidget {
                             title,
                             style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                           IconButton(
