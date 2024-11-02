@@ -95,7 +95,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                 SizedBox(width: 8.0),
                                 Text(
                                   '${favorite['state']}, ${favorite['country']}',
-                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                  style: TextStyle(color: Colors.white, fontSize: 12),
                                 ),
                               ],
                             ),
@@ -105,7 +105,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                 SizedBox(width: 8.0),
                                 Text(
                                   '${favorite['date']}',
-                                  style: TextStyle(color: Colors.white, fontSize: 14),
+                                  style: TextStyle(color: Colors.white, fontSize: 12),
                                 ),
                               ],
                             ),

@@ -68,15 +68,28 @@ class _SearchPageState extends State<SearchPage> {
             backgroundColor: Colors.cyan[50],
             collapsedBackgroundColor: Colors.cyan[50],
             
-          title: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[Text('Showing Travel Plans for: ', style:TextStyle(fontSize: 18.0)), SizedBox(height:5)]),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, 
+            children:[
+              SizedBox(height:5),
+              Row(
+                children: [
+                  SizedBox(width:10),
+                  Text('Showing Travel Plans for: ', style:TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)), 
+
+                ]
+              ),
+              SizedBox(height:8)]
+            ),
           subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, 
-          children: [Row(children:[Icon(Icons.location_on, color: Colors.grey),
+          children: [Row(children:[SizedBox(width:10),Icon(Icons.location_on, color: Colors.grey),
                                 SizedBox(width: 8.0),
-                                Text('${widget.state}, ${widget.country}', style: TextStyle(fontSize: 14.0)),]), SizedBox(height:5), 
-                    Row(children:[Icon(Icons.calendar_today, color: Colors.grey),
+                                Text('${widget.state}, ${widget.country}', style: TextStyle(fontSize: 14.0)),]), 
+                                SizedBox(height:8), 
+                    Row(children:[SizedBox(width:10),Icon(Icons.calendar_today, color: Colors.grey),
                                 SizedBox(width: 8.0),
                                 Text('${widget.departure.year.toString()}.${widget.departure.month.toString().padLeft(2, '0')}.${widget.departure.day.toString().padLeft(2, '0')} - ${widget.arrival.year.toString()}.${widget.arrival.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')}', style: TextStyle(fontSize: 14.0)),
-                              ])],),
+                              ]),SizedBox(height:8),],),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -96,7 +109,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
           children: <Widget>[
             ListTile(title: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[
-              Row(children:[Icon(Icons.person, color: Colors.grey),
+              Row(children:[SizedBox(width: 10.0),Icon(Icons.person, color: Colors.grey),
                                 SizedBox(width: 8.0),
                                 Text('인원: ${num_people}명', style: TextStyle(fontSize: 14.0)),
                                 SizedBox(width: 16.0),

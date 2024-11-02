@@ -72,8 +72,7 @@ class _MapsPageState extends State<MapsPage> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.arrow_back, color: Colors.black),
-                      SizedBox(width: 16.0),
+                      SizedBox(width: 10.0),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
