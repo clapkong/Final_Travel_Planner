@@ -49,8 +49,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.cyan[900]),),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('Home Page', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.cyan[900]),),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

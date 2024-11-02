@@ -59,8 +59,8 @@ class _SearchPageState extends State<SearchPage> {
     List<bool> travel_style = widget.travel_style;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Page', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.cyan[900]),),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('Search Page', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.cyan[900]),),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
       ),
       body:Column(
         children:<Widget>[
@@ -75,18 +75,18 @@ class _SearchPageState extends State<SearchPage> {
               Row(
                 children: [
                   SizedBox(width:10),
-                  Text('Showing Travel Plans for: ', style:TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)), 
+                  Text('Showing Travel Plans for: ', style:TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.75))), 
 
                 ]
               ),
               SizedBox(height:8)]
             ),
           subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, 
-          children: [Row(children:[SizedBox(width:10),Icon(Icons.location_on, color: Colors.grey),
+          children: [Row(children:[SizedBox(width:10),Icon(Icons.location_on, color: Colors.cyan[900]!.withOpacity(0.75)),
                                 SizedBox(width: 8.0),
                                 Text('${widget.state}, ${widget.country}', style: TextStyle(fontSize: 14.0)),]), 
                                 SizedBox(height:8), 
-                    Row(children:[SizedBox(width:10),Icon(Icons.calendar_today, color: Colors.grey),
+                    Row(children:[SizedBox(width:10),Icon(Icons.calendar_today, color: Colors.cyan[900]!.withOpacity(0.75)),
                                 SizedBox(width: 8.0),
                                 Text('${widget.departure.year.toString()}.${widget.departure.month.toString().padLeft(2, '0')}.${widget.departure.day.toString().padLeft(2, '0')} - ${widget.arrival.year.toString()}.${widget.arrival.month.toString().padLeft(2, '0')}.${widget.arrival.day.toString().padLeft(2, '0')}', style: TextStyle(fontSize: 14.0)),
                               ]),SizedBox(height:8),],),
@@ -94,7 +94,7 @@ class _SearchPageState extends State<SearchPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
-                icon: Icon(Icons.edit, color: Colors.grey),
+                icon: Icon(Icons.edit, color: Colors.cyan[900]!.withOpacity(0.75)),
                 onPressed: () {
                   Navigator.push(
                             context,
@@ -109,15 +109,15 @@ class _SearchPageState extends State<SearchPage> {
           ),
           children: <Widget>[
             ListTile(title: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[
-              Row(children:[SizedBox(width: 10.0),Icon(Icons.person, color: Colors.grey),
+              Row(children:[SizedBox(width: 10.0),Icon(Icons.person, color: Colors.cyan[900]!.withOpacity(0.75)),
                                 SizedBox(width: 8.0),
                                 Text('인원: ${num_people}명', style: TextStyle(fontSize: 14.0)),
                                 SizedBox(width: 16.0),
-                                Icon(Icons.paid, color: Colors.grey),
+                                Icon(Icons.paid, color: Colors.cyan[900]!.withOpacity(0.75)),
                                 SizedBox(width: 8.0),
                                 Text('예산: ${budget}만원', style: TextStyle(fontSize: 14.0)),
                                 SizedBox(width: 16.0),
-                                Icon(Icons.hotel, color: Colors.grey),
+                                Icon(Icons.hotel, color: Colors.cyan[900]!.withOpacity(0.75)),
                                 SizedBox(width: 8.0),
                                 Text('숙소: ${accommodation_labels[accommodation]}', style: TextStyle(fontSize: 14.0)),
                                 ]), SizedBox(height:10),
@@ -186,18 +186,25 @@ class TravelPlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0), 
+      ),
+      elevation: 2.0, 
+      margin: EdgeInsets.all(12.0),
       child: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(12.0),
         child: Row(
           children: [
-            // 여행 계획 이미지 (샘플로 아이콘 사용)
-            Container(
-              width: 100,
-              height: 100,
-              child: Image.asset(
-                travel_plan.img, // 이미지 경로 사용
-                fit: BoxFit.cover, // 이미지가 잘 맞도록 설정
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              // 여행 계획 이미지 (샘플로 아이콘 사용)
+              child: Container(
+                width: 100,
+                height: 100,
+                child: Image.asset(
+                  travel_plan.img, // 이미지 경로 사용
+                  fit: BoxFit.cover, // 이미지가 잘 맞도록 설정
+                ),
               ),
             ),
             SizedBox(width: 16),
@@ -228,19 +235,19 @@ class TravelPlanCard extends StatelessWidget {
                   SizedBox(height: 8),
                   // 여행 계획 정보 텍스트
                   Text('Trip to ${state} ${travel_plan.name}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 1),
                   Text(
                     '₩ ${(budget*0.8+travel_plan.price*0.2).round()} 만원',//계산 결과가 budget과 어느정도 비슷하나, 음수가 나오지 않게 하기 위해 랜덤하게 만든 임의의 함수.
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,color: Colors.cyan.shade900),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 3),
                   Text(
                     '${travel_plan.summary}',
-                    style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+                    style: TextStyle(fontSize: 14, color: Colors.blueGrey, fontStyle: FontStyle.italic,),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 3),
                   Text(
                     'Date: ${date}',
                     style: TextStyle(fontSize: 12, color: Colors.grey),

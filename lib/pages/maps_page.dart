@@ -58,8 +58,8 @@ class _MapsPageState extends State<MapsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Maps Page', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.cyan[900]),),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('Maps Page', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.cyan[900]),),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
       ),
       body: Column(
         children:[
@@ -79,13 +79,13 @@ class _MapsPageState extends State<MapsPage> {
                           children: [
                             Row(
                               children: [
-                                Text('Trip to ${widget.state}', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold,)),
+                                Text('Trip to ${widget.state}', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.75))),
                               ],
                             ),
                             SizedBox(height: 8.0),
                             Row(
                               children: [
-                                Icon(Icons.location_on, color: Colors.grey),
+                                Icon(Icons.location_on, color: Colors.cyan[900]!.withOpacity(0.75)),
                                 SizedBox(width: 8.0),
                                 Text('${widget.state}, ${widget.country}', style: TextStyle(fontSize: 14.0)),
                               ],
@@ -93,7 +93,7 @@ class _MapsPageState extends State<MapsPage> {
                             SizedBox(height: 8.0),
                             Row(
                               children: [
-                                Icon(Icons.calendar_today, color: Colors.grey),
+                                Icon(Icons.calendar_today, color: Colors.cyan[900]!.withOpacity(0.75)),
                                 SizedBox(width: 8.0),
                                 Text(widget.date, style: TextStyle(fontSize: 14.0)),
                               ],
@@ -102,7 +102,7 @@ class _MapsPageState extends State<MapsPage> {
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.edit, color: Colors.black),
+                        icon: Icon(Icons.edit, color: Colors.cyan[900]!.withOpacity(0.75)),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -138,13 +138,13 @@ class _MapsPageState extends State<MapsPage> {
                       FloatingActionButton(
                         heroTag: "zoomIn",
                         onPressed: _zoomIn,
-                        child: Icon(Icons.add),
+                        child: Icon(Icons.add, color: Colors.cyan[900]),
                       ),
                       SizedBox(height: 10),
                       FloatingActionButton(
                         heroTag: "zoomOut",
                         onPressed: _zoomOut,
-                        child: Icon(Icons.remove),
+                        child: Icon(Icons.remove, color: Colors.cyan[900]),
                       ),
                     ],
                   ),

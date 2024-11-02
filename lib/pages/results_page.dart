@@ -81,9 +81,9 @@ class _ResultsPageState extends State<ResultsPage> {
       appBar: AppBar(
         title: Text(
           'Detailed Page',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.cyan[900]),
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.cyan[900]),
         ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
       ),
       body: Column(
         children: [
