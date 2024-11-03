@@ -123,7 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
     ]);
   }
 
-  // Handle bottom navigation bar item selection
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -135,7 +134,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        // Rebuild pages dynamically based on current state
         children: _pages.map((page) {
           if (page is SearchPage) {
             return SearchPage(

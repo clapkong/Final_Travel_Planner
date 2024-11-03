@@ -427,7 +427,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 15),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start, // Aligns to the left
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Icon(Icons.explore, color: Colors.cyan[900], size: 18), 
                 SizedBox(width: 8),

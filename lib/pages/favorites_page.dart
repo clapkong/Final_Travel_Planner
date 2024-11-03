@@ -40,7 +40,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ResultsPage(
-                      travelPlan: favorite['travelPlan'], // 해당 정보를 제공하거나 원하는 값으로 설정하세요
+                      travelPlan: favorite['travelPlan'],
                       state: favorite['state'] ?? '',
                       budget: favorite['budget'] ?? 20,
                       numPeople: favorite['num_people'] ?? 1,

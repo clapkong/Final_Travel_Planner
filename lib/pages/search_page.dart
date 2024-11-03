@@ -145,7 +145,6 @@ class _SearchPageState extends State<SearchPage> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  // 여기에 아이템을 클릭했을 때 실행할 동작을 정의하세요.
                   Navigator.push(
                     context,
                     MaterialPageRoute(

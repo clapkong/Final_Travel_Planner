@@ -1076,7 +1076,6 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
                   _addFavorite(path, title, country, state, keyword, date, num_people, budget, type, travel_style, travelPlan);
                 }
 
-                // Toggle the favorite state
                 isFavorite = !isFavorite;
               });
             },
