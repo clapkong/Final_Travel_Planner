@@ -1137,7 +1137,7 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop(); // 다이얼로그 닫기
+                            Navigator.of(context).pop(); 
                           },
                           child: Text('OK'),
                         ),
