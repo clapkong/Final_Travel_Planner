@@ -90,7 +90,6 @@ final List<Map<String, dynamic>> pseudoTravelPlan = [{
       "summary": "엘토아 해양 박물관, 나리아 성벽 투어, 세라노 거리 예술"
     }];
 
-
 class TravelPlan {
   final int id;
   final int search_id;
@@ -121,8 +120,6 @@ class SearchPage extends StatefulWidget {
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
-
-
 
 class _SearchPageState extends State<SearchPage> {
   bool _customTileExpanded = false;
@@ -156,8 +153,7 @@ class _SearchPageState extends State<SearchPage> {
       );
     }
 
-    String date =
-        '${travelInfo.departure.year.toString()}.${travelInfo.departure.month.toString().padLeft(2, '0')}.${travelInfo.departure.day.toString().padLeft(2, '0')} - ${travelInfo.arrival.year.toString()}.${travelInfo.arrival.month.toString().padLeft(2, '0')}.${travelInfo.arrival.day.toString().padLeft(2, '0')}';
+    String date ='${travelInfo.departure.year.toString()}.${travelInfo.departure.month.toString().padLeft(2, '0')}.${travelInfo.departure.day.toString().padLeft(2, '0')} - ${travelInfo.arrival.year.toString()}.${travelInfo.arrival.month.toString().padLeft(2, '0')}.${travelInfo.arrival.day.toString().padLeft(2, '0')}';
     
     return Scaffold(
       appBar: AppBar(
@@ -188,7 +184,7 @@ class _SearchPageState extends State<SearchPage> {
                                 SizedBox(height:8), 
                     Row(children:[SizedBox(width:10),Icon(Icons.calendar_today, color: Colors.cyan[900]!.withOpacity(0.75)),
                                 SizedBox(width: 8.0),
-                                Text('${travelInfo.departure.year.toString()}.${travelInfo.departure.month.toString().padLeft(2, '0')}.${travelInfo.departure.day.toString().padLeft(2, '0')} - ${travelInfo.arrival.year.toString()}.${travelInfo.arrival.month.toString().padLeft(2, '0')}.${travelInfo.arrival.day.toString().padLeft(2, '0')}', style: TextStyle(fontSize: 14.0)),
+                                Text('$date', style: TextStyle(fontSize: 14.0)),
                               ]),SizedBox(height:8),],),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -254,7 +250,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   );
                 },
-              child: TravelPlanCard(travel_plan: travel_plans[index], state: travelInfo.state, budget: travelInfo.budget, num_people: travelInfo.numPeople, date: date, type: accommodationLabels[travelInfo.accommodation]),);
+              child: TravelPlanCard(travel_plan: travel_plans[index]),);
             },
           ),  
         ),
@@ -264,18 +260,21 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
+//, state: travelInfo.state, budget: travelInfo.budget, num_people: travelInfo.numPeople, date: date, type: accommodationLabels[travelInfo.accommodation]
 class TravelPlanCard extends StatelessWidget {
   final TravelPlan travel_plan;
-  final String date;
-  final String state;
-  final int num_people;
-  final double budget;
-  final String type;
-
-  TravelPlanCard({required this.travel_plan, required this.state, required this.budget, required this.num_people, required this.date, required this.type});
+  TravelPlanCard({required this.travel_plan});
 
   @override
   Widget build(BuildContext context) {
+    final travelInfo = context.watch<UserInputProvider>().userInput;
+
+    if (travelInfo == null) {
+      return Text('');
+    }
+
+    String date ='${travelInfo.departure.year.toString()}.${travelInfo.departure.month.toString().padLeft(2, '0')}.${travelInfo.departure.day.toString().padLeft(2, '0')} - ${travelInfo.arrival.year.toString()}.${travelInfo.arrival.month.toString().padLeft(2, '0')}.${travelInfo.arrival.day.toString().padLeft(2, '0')}';
+    
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0), 
@@ -288,7 +287,6 @@ class TravelPlanCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
-              // 여행 계획 이미지 (샘플로 아이콘 사용)
               child: Container(
                 width: 100,
                 height: 100,
@@ -308,12 +306,12 @@ class TravelPlanCard extends StatelessWidget {
                   Row(
                     children: [
                       Chip(
-                        label: Text('${num_people}명'),
+                        label: Text('${travelInfo.numPeople}명'),
                         avatar: Icon(Icons.person, size: 14),
                       ),
                       SizedBox(width: 8),
                       Chip(
-                        label: Text('${travel_plan.hotel} ${type}'),
+                        label: Text('${travel_plan.hotel} ${accommodationLabels[travelInfo.accommodation]}'),
                         avatar: Icon(Icons.hotel, size: 14),
                       ),
                       SizedBox(width: 8),
@@ -325,12 +323,12 @@ class TravelPlanCard extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   // 여행 계획 정보 텍스트
-                  Text('Trip to ${state} #${travel_plan.title}',
+                  Text('[${travelInfo.state}] ${travel_plan.title}',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 1),
                   Text(
-                    '₩ ${(budget*0.8+travel_plan.price*0.2).round()} 만원',//계산 결과가 budget과 어느정도 비슷하나, 음수가 나오지 않게 하기 위해 랜덤하게 만든 임의의 함수.
+                    '₩ ${(travel_plan.price*0.2).round()} 만원',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,color: Colors.cyan.shade900),
                   ),
                   SizedBox(height: 3),
