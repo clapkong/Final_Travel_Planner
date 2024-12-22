@@ -3,6 +3,8 @@ import 'package:csc_picker/csc_picker.dart';
 import 'package:travel_planner/main.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_planner/pages/search_page.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt; 
+import 'package:flutter_tts/flutter_tts.dart'; 
 
 class HomePage extends StatefulWidget {
   @override
@@ -26,13 +28,13 @@ class _HomePageState extends State<HomePage> {
   String address = ""; // 사용자가 선택한 국가 및 도시 
 
   List<String> travelStyleLables = ['휴양 및 힐링', '기념일', '호캉스', '가족여행', '관광','역사 탐방'];
+  final TextEditingController _textController = TextEditingController();
 
   //Style 변수들
   final themeColor = Colors.cyan;
   final Color? themeColor900 = Colors.cyan[900];
   final subtitletextStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.cyan[900]);
   final double? subIconSize = 18;
-
 
   //numPeople increment
   void _incrementCounter() {
@@ -110,6 +112,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Expanded(
               child: TextField(
+                controller: _textController,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 decoration: InputDecoration(
@@ -489,6 +492,10 @@ class _HomePageState extends State<HomePage> {
             });
           }
           else{
+            if (_textController.text.isNotEmpty) {
+              setState(() {
+                command = _textController.text;
+            });}
             final userInput = UserInput(
               command: command,
               departure: departure,
@@ -503,9 +510,7 @@ class _HomePageState extends State<HomePage> {
             );
             //UserInput Provider로 상태 변경
             context.read<UserInputProvider>().updateUserInput(userInput);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("여행 계획이 저장되었습니다.")),
-            );
+
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SearchPage()),
