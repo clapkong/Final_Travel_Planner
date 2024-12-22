@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             //AI Command Textbox 
-            _AICommandInputWidget(),
+            _widgetAICommandInput(),
             Divider(
             height: 30,
             color: Colors.grey[300],
@@ -84,92 +84,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Icon(Icons.place, color: Colors.cyan[900], size: 18), 
-                SizedBox(width: 8),
-                Text('목적지(Destination): ', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.cyan[900])),
-                
-              ],
-            ),
-            SizedBox(height:5),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: CSCPicker(
-                    showStates: true, //enable state dropdown
-                    showCities: true, /// enable city drop down 
-                    flagState: CountryFlag.DISABLE, //disable flag
-
-                    ///Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER] (USE with disabledDropdownDecoration)
-                    dropdownDecoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        color: Colors.white,
-                        border:
-                            Border.all(color: Colors.cyan.shade100, width: 1)),
-
-                    ///Disabled Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER]  (USE with disabled dropdownDecoration)
-                    disabledDropdownDecoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        color: Colors.cyan.shade100,
-                        border:
-                            Border.all(color: Colors.cyan.shade100, width: 1)),
-
-                    ///placeholders for dropdown search field
-                    countrySearchPlaceholder: "Country",
-                    stateSearchPlaceholder: "State",
-                    citySearchPlaceholder: "City",
-
-                    ///labels for dropdown
-                    countryDropdownLabel: "  Country",
-                    stateDropdownLabel: "  State",
-                    cityDropdownLabel: "  City",
-
-                    ///selected item style [OPTIONAL PARAMETER]
-                    selectedItemStyle: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
-
-                    ///DropdownDialog Heading style [OPTIONAL PARAMETER]
-                    dropdownHeadingStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold),
-
-                    ///DropdownDialog Item style [OPTIONAL PARAMETER]
-                    dropdownItemStyle: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
-
-                    dropdownDialogRadius: 15.0,//Dialog box radius
-                    searchBarRadius: 15.0, //Search bar radius
-
-                    onCountryChanged: (value) {
-                      setState(() {
-                        country = value;
-                        _updateAddress();
-                      });
-                    },
-                    onStateChanged: (value) {
-                      setState(() {
-                        state = value ?? '';
-                        _updateAddress();
-                      });
-                    },
-                    onCityChanged: (value) {
-                      setState(() {
-                        city = value ?? '';
-                        _updateAddress();
-                      });
-                    },
-                  ),
-                ),
-                ],
-            ),
-            Text(address),
+            _widgetDestinationPicker(),
             SizedBox(height:10),
             Row(
               children:[
@@ -405,7 +320,7 @@ class _HomePageState extends State<HomePage> {
       )
     );
   }
-  Widget _AICommandInputWidget() {
+  Widget _widgetAICommandInput() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -461,6 +376,103 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
+  Widget _widgetDestinationPicker(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(Icons.place, color: Colors.cyan[900], size: 18), 
+            SizedBox(width: 8),
+            Text('목적지(Destination): ', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.cyan[900])),
+            
+          ],
+        ),
+        SizedBox(height:5),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: CSCPicker(
+                showStates: true, //enable state dropdown
+                showCities: true, /// enable city drop down 
+                flagState: CountryFlag.DISABLE, //disable flag
+                
+                //CSC 값 업데이트 
+                onCountryChanged: (value) {
+                  setState(() {
+                    country = value;
+                    _updateAddress();
+                  });
+                },
+                onStateChanged: (value) {
+                  setState(() {
+                    state = value ?? '';
+                    _updateAddress();
+                  });
+                },
+                onCityChanged: (value) {
+                  setState(() {
+                    city = value ?? '';
+                    _updateAddress();
+                  });
+                },
+
+                //placeholders for dropdown
+                countrySearchPlaceholder: "Country",
+                stateSearchPlaceholder: "State",
+                citySearchPlaceholder: "City",
+
+                //labels for dropdown
+                countryDropdownLabel: "  Country",
+                stateDropdownLabel: "  State",
+                cityDropdownLabel: "  City",
+
+                //Styles
+                //기본 Dropdown Box
+                dropdownDecoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: Colors.white,
+                    border:
+                        Border.all(color: Colors.cyan.shade100, width: 1)),
+
+                //Disabled Dropdown box 
+                disabledDropdownDecoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: Colors.cyan.shade100,
+                    border:
+                        Border.all(color: Colors.cyan.shade100, width: 1)),
+
+                //Selected item
+                selectedItemStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                ),
+
+                //DropdownDialog Heading
+                dropdownHeadingStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold),
+
+                ///DropdownDialog Item
+                dropdownItemStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                ),
+
+                dropdownDialogRadius: 15.0,//Dialog box radius
+                searchBarRadius: 15.0, //Search bar radius
+              ),
+            ),
+            ],
+        ),
+        Text(address),
+      ],
+    );
+  }
+  
 }
 
 
