@@ -1,16 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:csc_picker/csc_picker.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_planner/pages/maps_page.dart';
 import 'package:travel_planner/pages/search_page.dart';
 import 'package:travel_planner/pages/favorites_page.dart';
 import 'package:travel_planner/pages/results_page.dart';
 import 'package:travel_planner/pages/home_page.dart';
+import 'package:provider/provider.dart';
 
+// 상태 관리
 List<Map<String, dynamic>> favoritesList = [];
 
+//사용자가 입력폼에 입력한 내용을 클래스로 묶기 (버튼 누르면 한 번에 업데이트)
+class UserInput {
+  final String command;
+  final DateTime departure;
+  final DateTime arrival;
+  final String country;
+  final String state;
+  final String city;
+  final int numPeople;
+  final double budget;
+  final int accommodation;
+  final List<bool> travelStyle;
+
+  UserInput({
+    required this.command,
+    required this.departure,
+    required this.arrival,
+    required this.country,
+    required this.state,
+    required this.city,
+    required this.numPeople,
+    required this.budget,
+    required this.accommodation,
+    required this.travelStyle,
+  });
+}
+
+//
+class UserInputProvider with ChangeNotifier {
+  UserInput? _userInput;
+
+  UserInput? get userInput => _userInput;
+
+  void updateUserInput(UserInput userInput) {
+    _userInput = userInput;
+    notifyListeners();
+  }
+}
+
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserInputProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -40,88 +84,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
-  String _command = ""; //TODO
-  DateTime _departure = DateTime.now();
-  DateTime _arrival = DateTime.now();
-  String _country ="";
-  String _state = "";
-  String _city = "";
-  int _num_people = 1;
-  double _budget = 20;
-  int _accommodation = 0;
-  List<bool> _travel_style = [false, false, false, false, false, false];
 
-  final List<Widget> _pages = [];
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize pages with the HomePage, SearchPage, MapsPage, and FavoritesPage
-    _pages.addAll([
-      HomePage(
-        onSearch: (departure, arrival, country, state, city, num_people, budget, accommodation, travel_style) {
-          // Update state when search is performed
-          setState(() {
-            _departure = departure;
-            _arrival = arrival;
-            _country = country;
-            _state = state;
-            _city = city;
-            _num_people = num_people;
-            _budget = budget;
-            _accommodation = accommodation;
-            _travel_style = travel_style;
-            // Add search result to favorites
-            /*_favorites.add({
-              'departure': _departure,
-              'arrival': _arrival,
-              'country': _country,
-              'state': _state,
-              'city': _city,
-              'num_people': _num_people,
-              'budget': _budget,
-              'accommodation': _accommodation,
-              'travel_style': _travel_style,
-            });*/
-          });
-          // Navigate to SearchPage with the provided data
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SearchPage(
-              departure: _departure,
-              arrival: _arrival,
-              country: _country,
-              state: _state,
-              city: _city,
-              num_people: _num_people,
-              budget: _budget,
-              accommodation: _accommodation,
-              travel_style: _travel_style,
-              ),
-            ),
-          );
-        },
-      ),
-      SearchPage(
-              departure: _departure,
-              arrival: _arrival,
-              country: _country,
-              state: _state,
-              city: _city,
-              num_people: _num_people,
-              budget: _budget,
-              accommodation: _accommodation,
-              travel_style: _travel_style,
-      ),
-      MapsPage(
-              date: '${_departure.year.toString()}.${_departure.month.toString().padLeft(2, '0')}.${_departure.day.toString().padLeft(2, '0')} - ${_arrival.year.toString()}.${_arrival.month.toString().padLeft(2, '0')}.${_arrival.day.toString().padLeft(2, '0')}',
-              country: _country,
-              state: _state,
-      ),
-      FavoritesPage(favoritesList: favoritesList),
-    ]);
-  }
+  final List<Widget> _pages = [
+    HomePage(),         // 여행 정보 입력 페이지
+    SearchPage(),       // 검색 결과 페이지
+    MapsPage(),         // 지도 페이지
+    FavoritesPage(favoritesList: favoritesList),    // 즐겨찾기 페이지
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -134,30 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: _pages.map((page) {
-          if (page is SearchPage) {
-            return SearchPage(
-              departure: _departure,
-              arrival: _arrival,
-              country: _country,
-              state: _state,
-              city: _city,
-              num_people: _num_people,
-              budget: _budget,
-              accommodation: _accommodation,
-              travel_style: _travel_style,
-            );
-          } else if (page is MapsPage) {
-            return MapsPage(
-              date: '${_departure.year.toString()}.${_departure.month.toString().padLeft(2, '0')}.${_departure.day.toString().padLeft(2, '0')} - ${_arrival.year.toString()}.${_arrival.month.toString().padLeft(2, '0')}.${_arrival.day.toString().padLeft(2, '0')}',
-              country: _country,
-              state: _state,
-            );
-          } else if (page is FavoritesPage) {
-            return FavoritesPage(favoritesList: favoritesList);
-          }
-          return page;
-        }).toList(),
+        children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
