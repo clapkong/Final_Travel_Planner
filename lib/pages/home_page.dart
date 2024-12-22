@@ -62,55 +62,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             //AI Command Textbox 
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    decoration: InputDecoration(
-                      labelText: 'AI Planner에게 여행 계획을 알려주세요!',
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(
-                          color: Colors.cyan[900]!,
-                        ),
-                      ),focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(
-                          color: Colors.cyan[900]!, 
-                          width: 2.0, 
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.mic, color: Colors.cyan[900]),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('음성 인식이 완료되었습니다.'),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 3),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(width: 10),
-                Text('여행 스타일이나 특이사항을 AI에게 편하게 말씀해주세요!', style: TextStyle(color: Colors.cyan[900], fontSize: 11)),
-              ],
-            ),
-            SizedBox(height:10),
+            _AICommandInputWidget(),
             Divider(
             height: 30,
             color: Colors.grey[300],
@@ -451,6 +403,62 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       )
+    );
+  }
+  Widget _AICommandInputWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: InputDecoration(
+                  labelText: 'AI Planner에게 여행 계획을 알려주세요!',
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(
+                      color: Colors.cyan[900]!,
+                    ),
+                  ),focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(
+                      color: Colors.cyan[900]!, 
+                      width: 2.0, 
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.mic, color: Colors.cyan[900]),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('음성 인식이 완료되었습니다.'),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: 3),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(width: 10),
+            Text('여행 스타일이나 특이사항을 AI에게 편하게 말씀해주세요!', style: TextStyle(color: Colors.cyan[900], fontSize: 11)),
+          ],
+        ),
+        SizedBox(height:10),
+      ],
     );
   }
 }
