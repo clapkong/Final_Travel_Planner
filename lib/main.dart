@@ -12,6 +12,29 @@ List<Map<String, dynamic>> favoritesList = [];
 final List<String> accommodationLabels = ['호텔', '게스트하우스', '리조트', 'Airbnb'];
 List<String> travelStyleLabels = ['휴양 및 힐링', '기념일', '호캉스', '가족여행', '관광','역사 탐방'];
 
+Widget widgetEmptyPage() {
+  return Center(
+    child: Text('Home Page에서 여행 정보를 입력해주세요!'),
+  );
+}
+
+PreferredSizeWidget widgetAppBar(BuildContext context, String pageName) {
+  return AppBar(
+    title: Text(
+      '${pageName}',
+      style: TextStyle(fontWeight: FontWeight.w600, color: Colors.cyan[900]),
+    ),
+    backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
+  );
+}
+
+String formatDateRange(DateTime departure, DateTime arrival) {
+    return '${formatDate(departure)} - ${formatDate(arrival)}';
+}
+
+String formatDate(DateTime date){
+  return '${date.year}.${date.month.toString().padLeft(2, '0')}.${date.day.toString().padLeft(2, '0')}';
+}
 
 //사용자가 입력폼에 입력한 내용을 클래스로 묶기 (버튼 누르면 한 번에 업데이트)
 class UserInput {
