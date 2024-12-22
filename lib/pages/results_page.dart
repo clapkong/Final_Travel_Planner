@@ -3,28 +3,209 @@ import 'package:travel_planner/pages/maps_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:travel_planner/main.dart';
 import 'package:travel_planner/pages/favorites_page.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_planner/pages/search_page.dart';
+
+Map<String, List<Map<String, dynamic>>> pseudoItinerary = {
+  "Day1":[
+    {
+        "index": 1,
+        "time": "10:00 - 11:30",
+        "title": "호텔 체크인",
+        "location": "서울 신라 호텔",
+        "coordinate": "37.5503, 126.9908"
+    },
+    {
+        "index": 2,
+        "time": "11:30 - 12:30",
+        "title": "점심",
+        "location": "서울, 종로구 483",
+        "coordinate": "37.5503, 126.9908",
+        "subwayInfo": "4호선, 동대문역 4번 출구",
+        "cost": 40000
+    },
+    {
+        "index": 3,
+        "time": "13:00 - 14:00",
+        "title": "박물관 방문",
+        "location": "국립중앙박물관",
+        "coordinate": "37.5231, 126.9802"
+    },
+    {
+        "index": 4,
+        "time": "15:00 - 16:00",
+        "title": "커피 한 잔",
+        "location": "카페 베네, 서울",
+        "coordinate": "37.5482, 127.0077",
+        "cost": 10000
+    },
+    {
+        "index": 5,
+        "time": "16:30 - 17:30",
+        "title": "공원 산책",
+        "location": "남산공원, 서울",
+        "coordinate": "37.5514, 126.9882"
+    },
+    {
+        "index": 6,
+        "time": "18:00 - 19:00",
+        "title": "저녁 식사",
+        "location": "명동교자, 서울",
+        "coordinate": "37.5600, 126.9862",
+        "subwayInfo": "4호선, 명동역",
+        "cost": 50000
+    },
+    {
+        "index": 7,
+        "time": "19:30 - 20:00",
+        "title": "거리 쇼핑",
+        "location": "명동 쇼핑 거리",
+        "coordinate": "37.5610, 126.9858"
+    },
+    {
+        "index": 8,
+        "time": "20:30 - 21:30",
+        "title": "야경 감상",
+        "location": "N서울타워",
+        "coordinate": "37.5512, 126.9880",
+        "cost": 15000
+    }
+  ],
+  "Day2": [
+    {
+        "index": 1,
+        "time": "09:00 - 09:30",
+        "title": "아침 식사",
+        "location": "호텔 레스토랑",
+        "coordinate": "37.5503, 126.9908"
+    },
+    {
+        "index": 2,
+        "time": "09:45 - 10:45",
+        "title": "사원 방문",
+        "location": "조계사",
+        "coordinate": "37.5741, 126.9818"
+    },
+    {
+        "index": 3,
+        "time": "11:00 - 12:00",
+        "title": "경복궁 투어",
+        "location": "경복궁, 서울",
+        "coordinate": "37.5796, 126.9770",
+        "cost": 3000
+    },
+    {
+        "index": 4,
+        "time": "12:30 - 13:30",
+        "title": "북촌 점심 식사",
+        "location": "북촌 한옥마을",
+        "coordinate": "37.5825, 126.9857",
+        "subwayInfo": "3호선, 안국역",
+        "cost": 35000
+    },
+    {
+        "index": 5,
+        "time": "14:00 - 15:00",
+        "title": "북촌 한옥마을 방문",
+        "location": "북촌 한옥마을",
+        "coordinate": "37.5825, 126.9857"
+    },
+    {
+        "index": 6,
+        "time": "15:30 - 16:00",
+        "title": "차 시음",
+        "location": "인사동 찻집",
+        "coordinate": "37.5712, 126.9860",
+        "cost": 12000
+    },
+    {
+        "index": 7,
+        "time": "16:30 - 17:00",
+        "title": "인사동 탐방",
+        "location": "인사동 거리",
+        "coordinate": "37.5712, 126.9860"
+    },
+    {
+        "index": 8,
+        "time": "17:30 - 18:30",
+        "title": "창덕궁 방문",
+        "location": "창덕궁, 서울",
+        "coordinate": "37.5823, 126.9910",
+        "cost": 8000
+    },
+    {
+        "index": 9,
+        "time": "19:00 - 20:30",
+        "title": "한식 BBQ 저녁",
+        "location": "마포구, 서울",
+        "coordinate": "37.5565, 126.9245",
+        "cost": 70000
+    },
+    {
+        "index": 10,
+        "time": "21:00 - 22:00",
+        "title": "한강 유람선 투어",
+        "location": "여의도 한강공원",
+        "coordinate": "37.5292, 126.9348",
+        "cost": 20000
+    }
+  ],
+  "Day3":[
+    {
+        "index": 1,
+        "time": "10:00 - 11:30",
+        "title": "호텔 체크아웃",
+        "location": "신라 호텔",
+        "coordinate": "37.5503, 126.9908"
+    },
+    {
+        "index": 2,
+        "time": "11:30 - 12:30",
+        "title": "점심",
+        "location": "서울, 종로구 483",
+        "subwayInfo": "4호선, 동대문역 4번 출구",
+        "cost": 40000,
+        "coordinate": "37.5741, 126.9818"
+    },
+    {
+        "index": 3,
+        "time": "13:00 - 14:00",
+        "title": "박물관 방문",
+        "location": "국립중앙박물관",
+        "coordinate": "37.5231, 126.9802"
+    },
+    {
+        "index": 4,
+        "time": "15:00 - 16:00",
+        "title": "커피 한 잔",
+        "location": "카페 베네, 서울",
+        "cost": 10000,
+        "coordinate": "37.5482, 127.0077"
+    },
+    {
+        "index": 5,
+        "time": "16:30 - 17:30",
+        "title": "공원 산책",
+        "location": "남산공원, 서울",
+        "coordinate": "37.5514, 126.9882"
+    },
+    {
+        "index": 6,
+        "time": "18:00 - 19:00",
+        "title": "저녁 식사",
+        "location": "명동교자, 서울",
+        "subwayInfo": "4호선, 명동역",
+        "cost": 50000,
+        "coordinate": "37.5600, 126.9862"
+    }
+  ]
+};
 
 class ResultsPage extends StatefulWidget {
   final dynamic travelPlan;
-  final String state;
-  final double budget;
-  final int numPeople;
-  final String date;
-  final String type;
-  final List<bool> travel_style;
-  final List<String> travel_style_labels;
-  final String country;
 
   ResultsPage({
     required this.travelPlan,
-    required this.state,
-    required this.budget,
-    required this.numPeople,
-    required this.date,
-    required this.type,
-    required this.travel_style,
-    required this.travel_style_labels,
-    required this.country,
   });
 
   @override
@@ -32,51 +213,53 @@ class ResultsPage extends StatefulWidget {
 }
 
 class _ResultsPageState extends State<ResultsPage> {
-
   late dynamic travelPlan;
-    late int currentDay;
+  late int currentDay;
 
-  late String path;
+  late String title;
+  late String img1;
+  late String img2;
+  late String img3;
   late String hotel;
   late String keyword;
-  late String name;
   late double price;
   late String summary;
-
-  late String date;
-  late String state;
-  late int num_people;
-  late double budget;
-  late String type; //accommodation
-
-  late List<bool> travel_style;
-  late List<String> travel_style_labels;
-  late String country;
 
    @override
   void initState() {
     super.initState();
     travelPlan = widget.travelPlan;
     currentDay = 1;
-    path = widget.travelPlan.img;
-    hotel = widget.travelPlan.hotel;
-    keyword = widget.travelPlan.keyword;
-    name = widget.travelPlan.name;
-    price = widget.travelPlan.price;
-    summary = widget.travelPlan.summary;
 
-    date = widget.date;
-    country = widget.country;
-    state = widget.state;
-    num_people = widget.numPeople;
-    budget = widget.budget;
-    type = widget.type;
-    travel_style = widget.travel_style;
-    travel_style_labels = widget.travel_style_labels;
+    title = travelPlan.title;
+    img1 = travelPlan.img1;
+    img2 = travelPlan.img2;
+    img3 = travelPlan.img3;
+    hotel = travelPlan.hotel;
+    keyword = travelPlan.keyword;
+    price = travelPlan.price;
+    summary = travelPlan.summary;
   }
-
+  
   @override
   Widget build(BuildContext context) {
+    final travelInfo = context.watch<UserInputProvider>().userInput;
+
+    if (travelInfo == null) {
+      return Scaffold(
+        appBar: widgetAppBar(context, 'Detailed Page'),
+        body: Center(child: Text('저장된 여행 정보가 없습니다.')),
+      );
+    }
+
+    String date = formatDateRange(travelInfo.departure, travelInfo.arrival);
+    String country = travelInfo.country;
+    String state = travelInfo.state;
+    int numPeople = travelInfo.numPeople;
+    double budget = travelInfo.budget;
+    String type = accommodationLabels[travelInfo.accommodation];
+    List<bool> travelStyle = travelInfo.travelStyle;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -87,9 +270,9 @@ class _ResultsPageState extends State<ResultsPage> {
       ),
       body: Column(
         children: [
-          CarouselWithOverlay(img: path, title: name, country: country, state: state, keyword: keyword, date: date, num_people: num_people, budget: budget, type:type, travel_style: travel_style, travel_style_labels: travel_style_labels, travelPlan: travelPlan),
+          CarouselWithOverlay(img: img1, title: title, country: country, state: state, keyword: keyword, date: date, numPeople: numPeople, budget: budget, type:type, travelStyle: travelStyle, travelStyleLables: travelStyleLabels, travelPlan: travelPlan),
           SizedBox(height: 20),
-Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(width: 16),
@@ -123,7 +306,7 @@ Row(
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: getScheduleItemsForDay(currentDay), 
+                      children: getScheduleItemsForDay(pseudoItinerary,currentDay), 
                     ),
                   ],
                 )
@@ -150,7 +333,7 @@ Row(
                     
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MapsPage(date: date, country: country, state: state)),
+                      MaterialPageRoute(builder: (context) => MapsPage()),
                     );
                   },
                   child: Text('지도에서 보기'),
@@ -165,591 +348,6 @@ Row(
           ),
         ),
     );
-  }
-  List<Widget> getScheduleItemsForDay(int day) {
-    if (day == 1) {
-      return [
-        ScheduleItem(
-          index: 1,
-          time: '10:00 - 11:30',
-          title: '호텔 체크인',
-          location: '${hotel} ${type}',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 2,
-          time: '11:30 - 12:30',
-          title: '점심',
-          location: '서울, 종로구 483',
-          subwayInfo: '4호선, 동대문역 4번 출구',
-          cost: '40,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 3,
-          time: '13:00 - 14:00',
-          title: '박물관 방문',
-          location: '국립중앙박물관',
-          icons: [
-            Icons.image,
-            Icons.play_circle,
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 4,
-          time: '15:00 - 16:00',
-          title: '커피 한 잔',
-          location: '카페 베네, 서울',
-          cost: '10,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 5,
-          time: '16:30 - 17:30',
-          title: '공원 산책',
-          location: '남산공원, 서울',
-          icons: [
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 6,
-          time: '18:00 - 19:00',
-          title: '저녁 식사',
-          location: '명동교자, 서울',
-          subwayInfo: '4호선, 명동역',
-          cost: '50,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 7,
-          time: '19:30 - 20:00',
-          title: '거리 쇼핑',
-          location: '명동 쇼핑 거리',
-          icons: [
-            Icons.video_library,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 8,
-          time: '20:30 - 21:30',
-          title: '야경 감상',
-          location: 'N서울타워',
-          cost: '15,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 9,
-          time: '09:00 - 09:30',
-          title: '아침 식사',
-          location: '호텔 레스토랑',
-          icons: [
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 10,
-          time: '09:45 - 10:45',
-          title: '사원 방문',
-          location: '조계사',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 11,
-          time: '11:00 - 12:00',
-          title: '경복궁 투어',
-          location: '경복궁, 서울',
-          cost: '3,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.play_circle,
-            Icons.play_circle,
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 12,
-          time: '12:30 - 13:30',
-          title: '북촌 점심 식사',
-          location: '북촌 한옥마을',
-          subwayInfo: '3호선, 안국역',
-          cost: '35,000 ₩',
-          icons: [
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 13,
-          time: '14:00 - 15:00',
-          title: '북촌 한옥마을 방문',
-          location: '북촌 한옥마을',
-          icons: [
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 14,
-          time: '15:30 - 16:00',
-          title: '차 시음',
-          location: '인사동 찻집',
-          cost: '12,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 15,
-          time: '16:30 - 17:00',
-          title: '인사동 탐방',
-          location: '인사동 거리',
-          icons: [
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 16,
-          time: '17:30 - 18:30',
-          title: '창덕궁 방문',
-          location: '창덕궁, 서울',
-          cost: '8,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 17,
-          time: '19:00 - 20:30',
-          title: '한식 BBQ 저녁',
-          location: '마포구, 서울',
-          cost: '70,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 18,
-          time: '21:00 - 22:00',
-          title: '한강 유람선 투어',
-          location: '여의도 한강공원',
-          cost: '20,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 19,
-          time: '10:00 - 11:00',
-          title: '코엑스 아쿠아리움 방문',
-          location: '코엑스몰, 강남',
-          cost: '28,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 20,
-          time: '11:30 - 12:30',
-          title: '강남 점심 식사',
-          location: '강남구',
-          subwayInfo: '2호선, 강남역',
-          cost: '45,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-      ];
-    } else if (day == 2) {
-      return [
-        ScheduleItem(
-          index: 1,
-          time: '11:30 - 12:30',
-          title: '점심',
-          location: '서울, 종로구 483',
-          subwayInfo: '4호선, 동대문역 4번 출구',
-          cost: '40,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 2,
-          time: '12:30 - 13:00',
-          title: '지하철 타고 이동',
-          location: '국립중앙박물관',
-          subwayInfo: '2호선, 신촌역역 4번 출구',
-          icons: [
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 3,
-          time: '13:00 - 14:00',
-          title: '박물관 방문',
-          location: '국립중앙박물관',
-          icons: [
-            Icons.image,
-            Icons.play_circle,
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 4,
-          time: '15:00 - 16:00',
-          title: '커피 한 잔',
-          location: '카페 베네, 서울',
-          cost: '10,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 5,
-          time: '16:30 - 17:30',
-          title: '공원 산책',
-          location: '남산공원, 서울',
-          icons: [
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 6,
-          time: '18:00 - 19:00',
-          title: '저녁 식사',
-          location: '명동교자, 서울',
-          subwayInfo: '4호선, 명동역',
-          cost: '50,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 7,
-          time: '19:30 - 20:00',
-          title: '거리 쇼핑',
-          location: '명동 쇼핑 거리',
-          icons: [
-            Icons.video_library,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 8,
-          time: '20:30 - 21:30',
-          title: '야경 감상',
-          location: 'N서울타워',
-          cost: '15,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 9,
-          time: '09:00 - 09:30',
-          title: '아침 식사',
-          location: '호텔 레스토랑',
-          icons: [
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 10,
-          time: '09:45 - 10:45',
-          title: '사원 방문',
-          location: '조계사',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 11,
-          time: '11:00 - 12:00',
-          title: '경복궁 투어',
-          location: '경복궁, 서울',
-          cost: '3,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.play_circle,
-            Icons.play_circle,
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 12,
-          time: '12:30 - 13:30',
-          title: '북촌 점심 식사',
-          location: '북촌 한옥마을',
-          subwayInfo: '3호선, 안국역',
-          cost: '35,000 ₩',
-          icons: [
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 13,
-          time: '14:00 - 15:00',
-          title: '북촌 한옥마을 방문',
-          location: '북촌 한옥마을',
-          icons: [
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 14,
-          time: '15:30 - 16:00',
-          title: '차 시음',
-          location: '인사동 찻집',
-          cost: '12,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 15,
-          time: '16:30 - 17:00',
-          title: '인사동 탐방',
-          location: '인사동 거리',
-          icons: [
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 16,
-          time: '17:30 - 18:30',
-          title: '창덕궁 방문',
-          location: '창덕궁, 서울',
-          cost: '8,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 17,
-          time: '19:00 - 20:30',
-          title: '한식 BBQ 저녁',
-          location: '마포구, 서울',
-          cost: '70,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 18,
-          time: '21:00 - 22:00',
-          title: '한강 유람선 투어',
-          location: '여의도 한강공원',
-          cost: '20,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 19,
-          time: '10:00 - 11:00',
-          title: '코엑스 아쿠아리움 방문',
-          location: '코엑스몰, 강남',
-          cost: '28,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 20,
-          time: '11:30 - 12:30',
-          title: '강남 점심 식사',
-          location: '강남구',
-          subwayInfo: '2호선, 강남역',
-          cost: '45,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-      ];
-    } else {
-      return [
-        ScheduleItem(
-          index: 1,
-          time: '10:00 - 11:30',
-          title: '호텔 체크아웃',
-          location: '${hotel} ${type}',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 2,
-          time: '11:30 - 12:30',
-          title: '점심',
-          location: '서울, 종로구 483',
-          subwayInfo: '4호선, 동대문역 4번 출구',
-          cost: '40,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 3,
-          time: '13:00 - 14:00',
-          title: '박물관 방문',
-          location: '국립중앙박물관',
-          icons: [
-            Icons.image,
-            Icons.play_circle,
-            Icons.video_library,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 4,
-          time: '15:00 - 16:00',
-          title: '커피 한 잔',
-          location: '카페 베네, 서울',
-          cost: '10,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 5,
-          time: '16:30 - 17:30',
-          title: '공원 산책',
-          location: '남산공원, 서울',
-          icons: [
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-        ScheduleItem(
-          index: 6,
-          time: '18:00 - 19:00',
-          title: '저녁 식사',
-          location: '명동교자, 서울',
-          subwayInfo: '4호선, 명동역',
-          cost: '50,000 ₩',
-          icons: [
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-            Icons.image,
-          ],
-        ),
-        SizedBox(height: 16),
-      ];
-    }
   }
 }
 
@@ -926,13 +524,15 @@ class CarouselWithOverlay extends StatefulWidget {
   final String state;
   final String keyword;
   final String date;
-  final int num_people;
+  final int numPeople;
   final double budget;
+
+
   final String type;
-  final List<bool> travel_style;
-  final List<String> travel_style_labels;
+  final List<bool> travelStyle;
+  final List<String> travelStyleLables;
   final dynamic travelPlan;
-  CarouselWithOverlay({required this.img, required this.title, required this.country, required this.state, required this.keyword, required this.date, required this.num_people, required this.budget, required this.type, required this.travel_style, required this.travel_style_labels, required this.travelPlan});
+  CarouselWithOverlay({required this.img, required this.title, required this.country, required this.state, required this.keyword, required this.date, required this.numPeople, required this.budget, required this.type, required this.travelStyle, required this.travelStyleLables, required this.travelPlan});
   @override
   _CarouselWithOverlayState createState() => _CarouselWithOverlayState();
 }
@@ -944,15 +544,15 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
   late final String country;
   late final String keyword;
   late final String date;
-  late final int num_people;
+  late final int numPeople;
   late final double budget;
   late final String type;
-  late final List<bool> travel_style;
-  late final List<String> travel_style_labels;
+  late final List<bool> travelStyle;
+  late final List<String> travelStyleLables;
   late final String path;
   late final dynamic travelPlan;
 
-  void _addFavorite(String path, String title, String country, String state, String keyword, String date, int num_people, double budget, String type, List<bool> travel_style, dynamic travelPlan) {
+  void _addFavorite(String path, String title, String country, String state, String keyword, String date, int numPeople, double budget, String type, List<bool> travelStyle, dynamic travelPlan) {
     setState(() {
       favoritesList.add({
         'title': title,
@@ -960,10 +560,10 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
         'state': state,
         'keyword': keyword,
         'date': date,
-        'num_people': num_people,
+        'numPeople': numPeople,
         'budget': budget,
         'accommodation': type,
-        'travel_style': travel_style,
+        'travelStyle': travelStyle,
         'path': path,
         'travelPlan': travelPlan,//favorite page의 card를 눌러서 results_page를 여는 방법을 위해 필요
       });
@@ -974,20 +574,13 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
   void initState() {
     super.initState();
     title = widget.title;
-    country = widget.country;
     state = widget.state;
     keyword = widget.keyword;
-    date = widget.date;
-    num_people = widget.num_people;
-    budget = widget.budget;
-    type = widget.type;
-    travel_style = widget.travel_style;
-    travel_style_labels = widget.travel_style_labels;
     path = widget.img;
     travelPlan = widget.travelPlan;
     imageList = [
-      path, //프로필 이미지와 동일한 이미지 carousel에 넣었음
-    'assets/images/carousel_1.jpg',
+    'assets/images/carousel_2.jpg',
+    'assets/images/carousel_2.jpg',
     'assets/images/carousel_2.jpg',
   ];
     isFavorite = favoritesList.any((favorite) =>
@@ -996,7 +589,7 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
       favorite['state'] == state &&
       favorite['keyword'] == keyword &&
       favorite['date'] == date &&
-      favorite['num_people'] == num_people &&
+      favorite['numPeople'] == numPeople &&
       favorite['budget'] == budget &&
       favorite['accommodation'] == type
     );
@@ -1006,6 +599,18 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    final travelInfo = context.watch<UserInputProvider>().userInput;
+
+    if (travelInfo == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text('Search Page')),
+        body: Center(child: Text('저장된 여행 정보가 없습니다.')),
+      );
+    }
+
+    String date =
+        '${travelInfo.departure.year.toString()}.${travelInfo.departure.month.toString().padLeft(2, '0')}.${travelInfo.departure.day.toString().padLeft(2, '0')} - ${travelInfo.arrival.year.toString()}.${travelInfo.arrival.month.toString().padLeft(2, '0')}.${travelInfo.arrival.day.toString().padLeft(2, '0')}';
+
     return Stack(
       children: [
         CarouselSlider(
@@ -1067,13 +672,13 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
                     favorite['country'] == country &&
                     favorite['state'] == state &&
                     favorite['date'] == date &&
-                    favorite['num_people'] == num_people &&
+                    favorite['numPeople'] == numPeople &&
                     favorite['budget'] == budget &&
                     favorite['accommodation'] == type
                   );
                 } else {
                   // Add item to favoritesList
-                  _addFavorite(path, title, country, state, keyword, date, num_people, budget, type, travel_style, travelPlan);
+                  _addFavorite(path, title, country, state, keyword, date, numPeople, budget, type, travelStyle, travelPlan);
                 }
 
                 isFavorite = !isFavorite;
@@ -1106,28 +711,28 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
                                 Text('여행지: ${widget.state}, ${widget.country}', style: TextStyle(fontSize: 14.0)),]), SizedBox(height:5), 
                           Row(children:[Icon(Icons.calendar_today, color: Colors.grey),
                                 SizedBox(width: 8.0),
-                                Text('여행 기간: ${date}')
+                                Text('여행 기간: ${widget.date}')
                                 ]),
                           Row(children:[Icon(Icons.person, color: Colors.grey),
                                 SizedBox(width: 8.0),
-                                Text('인원: ${num_people}')
+                                Text('인원: ${widget.numPeople}')
                                 ]),
                           Row(children:[Icon(Icons.paid, color: Colors.grey),
                                 SizedBox(width: 8.0),
-                                Text('예산: ${budget}')
+                                Text('예산: ${widget.budget}')
                                 ]),
                           Row(children:[Icon(Icons.hotel, color: Colors.grey),
                                 SizedBox(width: 8.0),
-                                Text('숙소 유형: ${type}')
+                                Text('숙소 유형: ${widget.type}')
                                 ]),
                           Text('\n 여행 목적: '),
                           Row(children:[
-                            for (int i = 0; i < travel_style.length; i++)
-                              if (travel_style[i])
+                            for (int i = 0; i < widget.travelStyle.length; i++)
+                              if (widget.travelStyle[i])
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                   child: Chip(
-                                    label: Text('# ${travel_style_labels[i]}', style: TextStyle(fontSize: 14.0)),
+                                    label: Text('# ${travelStyleLables[i]}', style: TextStyle(fontSize: 14.0)),
                                   ),
                                 ),
                           ]),

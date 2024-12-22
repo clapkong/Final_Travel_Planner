@@ -36,6 +36,33 @@ String formatDate(DateTime date){
   return '${date.year}.${date.month.toString().padLeft(2, '0')}.${date.day.toString().padLeft(2, '0')}';
 }
 
+List<Widget> getScheduleItemsForDay(Map<String, dynamic> scheduleData, int day) {
+  String dayKey = 'Day$day';
+  if (!scheduleData.containsKey(dayKey)) {
+    return [Text('해당 날짜의 일정이 없습니다.')];
+  }
+
+  return (scheduleData[dayKey] as List<dynamic>).map<Widget>((item) {
+    return Column(
+      children: [
+        ScheduleItem(
+          index: item['index'],
+          time: item['time'],
+          title: item['title'],
+          location: item['location'] ?? null,
+          subwayInfo: item['subwayInfo'] ?? null,
+          cost: item.containsKey('cost') ? '${item['cost']} ₩' : null,
+          icons: List<IconData>.generate(
+            3, // 기본 아이콘 갯수
+            (index) => Icons.image,
+          ),
+        ),
+        SizedBox(height: 16),
+      ],
+    );
+  }).toList();
+}
+
 //사용자가 입력폼에 입력한 내용을 클래스로 묶기 (버튼 누르면 한 번에 업데이트)
 class UserInput {
   final String command;
