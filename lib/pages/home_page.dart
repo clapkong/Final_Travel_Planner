@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String command = "";
   DateTime departure = DateTime.now();
-  DateTime date = DateTime.now();
+  DateTime arrival = DateTime.now();
   String country = "";
   String state = "";
   String city = "";
@@ -61,10 +61,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Page', style: TextStyle(fontWeight: FontWeight.w600, color: themeColor900),),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
-      ),
+      appBar: widgetAppBar(context, 'Home Page'),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         padding: const EdgeInsets.all(25.0),
@@ -280,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                 //Departure Date Select Button
                 ElevatedButton.icon(
                   icon: Icon(Icons.calendar_today),
-                  label:Text(flagSetDepartureDate==false? 'From':"${departure.year.toString()}-${departure.month.toString().padLeft(2, '0')}-${departure.day.toString().padLeft(2, '0')}"),
+                  label:Text(flagSetDepartureDate==false? 'From':formatDate(departure)),
                   onPressed: () async {
                     final selectedDate = await showDatePicker(
                       context: context,
@@ -302,18 +299,18 @@ class _HomePageState extends State<HomePage> {
                 ElevatedButton.icon(
                   icon: Icon(Icons.calendar_today),
                   label: Text(
-                    flagSetArrivalDate==false? 'To':"${date.year.toString()}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+                    flagSetArrivalDate==false? 'To':formatDate(arrival),
                   ),
                   onPressed: () async {
                     final selectedDate = await showDatePicker(
                       context: context,
-                      initialDate: date,
+                      initialDate: arrival,
                       firstDate: DateTime(2000),
                       lastDate: DateTime(3000),
                     );
                     if(selectedDate != null){
                       setState((){
-                        date = selectedDate;
+                        arrival = selectedDate;
                       });
                       flagSetArrivalDate = true;
                     }
@@ -325,7 +322,7 @@ class _HomePageState extends State<HomePage> {
             )
           ]
         ),
-        Text(departure.compareTo(date) > 0? '여행 일정을 확인해주세요.': '', style:TextStyle(color: Colors.red)
+        Text(departure.compareTo(arrival) > 0? '여행 일정을 확인해주세요.': '', style:TextStyle(color: Colors.red)
         ),
         SizedBox(height: 20),
       ],
@@ -484,7 +481,7 @@ class _HomePageState extends State<HomePage> {
       child: ElevatedButton(
         child: const Text('여행 계획 만들기!'),
         onPressed: () {
-          if (departure.compareTo(date) > 0){
+          if (departure.compareTo(arrival) > 0){
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("출발 일자와 도착 일자를 확인해주세요.")),
@@ -499,7 +496,7 @@ class _HomePageState extends State<HomePage> {
             final userInput = UserInput(
               command: command,
               departure: departure,
-              arrival: date,
+              arrival: arrival,
               country: country,
               state: state,
               city: city,
