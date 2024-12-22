@@ -142,125 +142,147 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final travelInfo = context.watch<UserInputProvider>().userInput;
-
-    if (travelInfo == null) {
-      return Scaffold(
-        appBar: AppBar(
-        title: Text('Search Page', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.cyan[900]),),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
-        ),
-        body: Center(child: Text('Home Page에서 여행 정보를 입력해주세요!')),
-      );
-    }
-
-    String date ='${travelInfo.departure.year.toString()}.${travelInfo.departure.month.toString().padLeft(2, '0')}.${travelInfo.departure.day.toString().padLeft(2, '0')} - ${travelInfo.arrival.year.toString()}.${travelInfo.arrival.month.toString().padLeft(2, '0')}.${travelInfo.arrival.day.toString().padLeft(2, '0')}';
-    
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Search Page', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.cyan[900]),),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
-      ),
-      body:Column(
+      appBar: widgetAppBar(context, 'Search Page'),
+      body: travelInfo == null
+      ? widgetEmptyPage()
+      : Column(
         children:<Widget>[
-          ExpansionTile(
-            backgroundColor: Colors.cyan[50],
-            collapsedBackgroundColor: Colors.cyan[50],
+        _widgetExpansionTile(context, travelInfo, formatDateRange(travelInfo.departure, travelInfo.arrival)),
+        const SizedBox(height:10),
+        _widgetTravelPlanListView(context)
+        ]
+      )
+    );
+  }
+  Widget _widgetExpansionTile(BuildContext context, UserInput travelInfo, String date){
+    return ExpansionTile(
+      backgroundColor: Colors.cyan[50],
+      collapsedBackgroundColor: Colors.cyan[50],
+      // Expansion Tile 제목
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, 
+        children:[
+          SizedBox(height:5),
+          Row(
+            children: [
+              SizedBox(width:10),
+              Text('Showing Travel Plans for: ', style:TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.75))), 
+            ]
+          ),
+          SizedBox(height:8)]
+        ),
+      // Tile 세부 내용 
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, 
+        children: [
+          Row(
+            children:[
+              SizedBox(width:10),
+              Icon(Icons.location_on, color: Colors.cyan[900]!.withOpacity(0.75)),
+              SizedBox(width: 8.0),
+              Text('${travelInfo.state}, ${travelInfo.country}', style: TextStyle(fontSize: 14.0)),
+            ]
+          ), 
+          SizedBox(height:8), 
+          Row(
+            children:[
+              SizedBox(width:10),
+              Icon(Icons.calendar_today, color: Colors.cyan[900]!.withOpacity(0.75)),
+              SizedBox(width: 8.0),
+              Text('$date', style: TextStyle(fontSize: 14.0)),
+              ]
+          ),
+          SizedBox(height:8),
+        ],
+      ),
+      //오른쪽 아이콘들
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(Icons.edit, color: Colors.cyan[900]!.withOpacity(0.75)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()),
+              );
+            },
+          ),
+          Icon(
+            _customTileExpanded ? Icons.arrow_drop_down_circle : Icons.arrow_drop_down,
+          ),
+        ],
+      ),
+      //Expand된 타일 내용
+      children: <Widget>[
+        ListTile(
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start, 
             children:[
-              SizedBox(height:5),
               Row(
-                children: [
-                  SizedBox(width:10),
-                  Text('Showing Travel Plans for: ', style:TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.75))), 
+                children:[
+                  SizedBox(width: 10.0),
+                  Icon(Icons.person, color: Colors.cyan[900]!.withOpacity(0.75)),
+                  SizedBox(width: 8.0),
+                  Text('인원: ${travelInfo.numPeople}명', style: TextStyle(fontSize: 14.0)),
+                  SizedBox(width: 16.0),
+                  Icon(Icons.paid, color: Colors.cyan[900]!.withOpacity(0.75)),
+                  SizedBox(width: 8.0),
+                  Text('예산: ${travelInfo.budget}만원', style: TextStyle(fontSize: 14.0)),
+                  SizedBox(width: 16.0),
+                  Icon(Icons.hotel, color: Colors.cyan[900]!.withOpacity(0.75)),
+                  SizedBox(width: 8.0),
+                  Text('숙소: ${accommodationLabels[travelInfo.accommodation]}', style: TextStyle(fontSize: 14.0)),
                 ]
-              ),
-              SizedBox(height:8)]
-            ),
-          subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, 
-          children: [Row(children:[SizedBox(width:10),Icon(Icons.location_on, color: Colors.cyan[900]!.withOpacity(0.75)),
-                                SizedBox(width: 8.0),
-                                Text('${travelInfo.state}, ${travelInfo.country}', style: TextStyle(fontSize: 14.0)),]), 
-                                SizedBox(height:8), 
-                    Row(children:[SizedBox(width:10),Icon(Icons.calendar_today, color: Colors.cyan[900]!.withOpacity(0.75)),
-                                SizedBox(width: 8.0),
-                                Text('$date', style: TextStyle(fontSize: 14.0)),
-                              ]),SizedBox(height:8),],),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(Icons.edit, color: Colors.cyan[900]!.withOpacity(0.75)),
-                onPressed: () {
-                  Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MyHomePage()),
-                          );
-                },
-              ),
-              Icon(
-                _customTileExpanded ? Icons.arrow_drop_down_circle : Icons.arrow_drop_down,
-              ),
-            ],
-          ),
-          children: <Widget>[
-            ListTile(title: Column(crossAxisAlignment: CrossAxisAlignment.start, children:[
-              Row(children:[SizedBox(width: 10.0),Icon(Icons.person, color: Colors.cyan[900]!.withOpacity(0.75)),
-                                SizedBox(width: 8.0),
-                                Text('인원: ${travelInfo.numPeople}명', style: TextStyle(fontSize: 14.0)),
-                                SizedBox(width: 16.0),
-                                Icon(Icons.paid, color: Colors.cyan[900]!.withOpacity(0.75)),
-                                SizedBox(width: 8.0),
-                                Text('예산: ${travelInfo.budget}만원', style: TextStyle(fontSize: 14.0)),
-                                SizedBox(width: 16.0),
-                                Icon(Icons.hotel, color: Colors.cyan[900]!.withOpacity(0.75)),
-                                SizedBox(width: 8.0),
-                                Text('숙소: ${accommodationLabels[travelInfo.accommodation]}', style: TextStyle(fontSize: 14.0)),
-                                ]), SizedBox(height:10),
-              Row(children:[
+              ), 
+              SizedBox(height:10),
+              Row(
+                children:[
                 for (int i = 0; i < travelInfo.travelStyle.length; i++)
                   if (travelInfo.travelStyle[i])
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: Chip(
-                        label: Text('${travelStyleLabels[i]}', style: TextStyle(fontSize: 14.0)),
+                        label: Text(travelStyleLabels[i], style: TextStyle(fontSize: 14.0)),
                       ),
                     ),
-              ])])),
-          ],
-          onExpansionChanged: (bool expanded) {
-            setState(() {
-              _customTileExpanded = expanded;
-            });
-          },
-        ),
-        SizedBox(height:10),
-        Expanded(
-          child: ListView.builder(
-            itemCount: travel_plans.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ResultsPage(
-                        travelPlan: travel_plans[index],
-                      ),
-                    ),
-                  );
-                },
-              child: TravelPlanCard(travel_plan: travel_plans[index]),);
+                  ]
+                )
+              ]
+            )
+          ),
+        ],
+      onExpansionChanged: (bool expanded) {
+        setState(() {
+          _customTileExpanded = expanded;
+        });
+      },
+    );
+  }
+  Widget _widgetTravelPlanListView(context){
+    return Expanded(
+      child: ListView.builder(
+        itemCount: travel_plans.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResultsPage(
+                    travelPlan: travel_plans[index],
+                  ),
+                ),
+              );
             },
-          ),  
-        ),
-        ]
-      )
+          child: TravelPlanCard(travel_plan: travel_plans[index]),);
+        },
+      ),  
     );
   }
 }
 
-//, state: travelInfo.state, budget: travelInfo.budget, num_people: travelInfo.numPeople, date: date, type: accommodationLabels[travelInfo.accommodation]
 class TravelPlanCard extends StatelessWidget {
   final TravelPlan travel_plan;
   TravelPlanCard({required this.travel_plan});
@@ -270,10 +292,10 @@ class TravelPlanCard extends StatelessWidget {
     final travelInfo = context.watch<UserInputProvider>().userInput;
 
     if (travelInfo == null) {
-      return Text('');
+      return SizedBox();
     }
 
-    String date ='${travelInfo.departure.year.toString()}.${travelInfo.departure.month.toString().padLeft(2, '0')}.${travelInfo.departure.day.toString().padLeft(2, '0')} - ${travelInfo.arrival.year.toString()}.${travelInfo.arrival.month.toString().padLeft(2, '0')}.${travelInfo.arrival.day.toString().padLeft(2, '0')}';
+    String date = formatDateRange(travelInfo.departure, travelInfo.arrival);
     
     return Card(
       shape: RoundedRectangleBorder(
@@ -328,7 +350,7 @@ class TravelPlanCard extends StatelessWidget {
                   ),
                   SizedBox(height: 1),
                   Text(
-                    '₩ ${(travel_plan.price*0.2).round()} 만원',
+                    '₩ ${travel_plan.price} 만원',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,color: Colors.cyan.shade900),
                   ),
                   SizedBox(height: 3),
