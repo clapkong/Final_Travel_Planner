@@ -1,49 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:travel_planner/main.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_planner/pages/search_page.dart';
 
 class HomePage extends StatefulWidget {
-  final Function(DateTime, DateTime, String, String, String, int, double, int, List<bool>) onSearch;
-  
-  HomePage({required this.onSearch});
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  String command = "";
   DateTime departure = DateTime.now();
   DateTime date = DateTime.now();
-  bool flag_from = false;
-  bool flag = false;
   String country = "";
   String state = "";
   String city = "";
-  String address = "";
-
-  int _num_people = 1;
-  double _budget = 20;
+  int numPeople = 1;
+  double budget = 20.0;
   int accommodation = 0;
-  List<bool> travel_style = [false, false, false, false, false, false];
+  List<bool> travelStyle = [false, false, false, false, false, false];
 
+  bool flagSetDepartureDate = false; // 사용자가 출발 날짜 선택했는지 여부
+  bool flagSetArrivalDate = false; //사용자가 도착 날짜 선택했는지 여부
+  String address = ""; // 사용자가 선택한 국가 및 도시 
+
+  //numPeople increment
   void _incrementCounter() {
     setState(() {
-      _num_people++;
+      numPeople++;
     });
   }
 
+  //numPeople decrement 
   void _decrementCounter() {
     setState(() {
-      if (_num_people > 1) {
-        _num_people--;
+      if (numPeople > 1) {
+        numPeople--;
       }
     });
   }
 
   void _updateAddress() {
-                setState(() {
-                  address = "$city, $state, $country";
-                });
-              }
+    setState(() {
+      address = "$city, $state, $country";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,14 +144,9 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 Expanded(
                   child: CSCPicker(
-                    ///Enable disable state dropdown [OPTIONAL PARAMETER]
-                    showStates: true,
-
-                    /// Enable disable city drop down [OPTIONAL PARAMETER]
-                    showCities: true,
-
-                    ///Enable (get flag with country name) / Disable (Disable flag) / ShowInDropdownOnly (display flag in dropdown only) [OPTIONAL PARAMETER]
-                    flagState: CountryFlag.DISABLE,
+                    showStates: true, //enable state dropdown
+                    showCities: true, /// enable city drop down 
+                    flagState: CountryFlag.DISABLE, //disable flag
 
                     ///Dropdown box decoration to style your dropdown selector [OPTIONAL PARAMETER] (USE with disabledDropdownDecoration)
                     dropdownDecoration: BoxDecoration(
@@ -175,9 +172,6 @@ class _HomePageState extends State<HomePage> {
                     stateDropdownLabel: "  State",
                     cityDropdownLabel: "  City",
 
-                    ///Disable country dropdown (Note: use it with default country)
-                    //disableCountry: true,
-
                     ///selected item style [OPTIONAL PARAMETER]
                     selectedItemStyle: TextStyle(
                       color: Colors.black,
@@ -196,11 +190,8 @@ class _HomePageState extends State<HomePage> {
                       fontSize: 14,
                     ),
 
-                    ///Dialog box radius [OPTIONAL PARAMETER]
-                    dropdownDialogRadius: 15.0,
-
-                    ///Search bar radius [OPTIONAL PARAMETER]
-                    searchBarRadius: 15.0,
+                    dropdownDialogRadius: 15.0,//Dialog box radius
+                    searchBarRadius: 15.0, //Search bar radius
 
                     ///triggers once country selected in dropdown
                     onCountryChanged: (value) {
@@ -250,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                     Spacer(),
                      ElevatedButton.icon(
                   icon: Icon(Icons.calendar_today),
-                  label:Text(flag_from==false? 'From':"${departure.year.toString()}-${departure.month.toString().padLeft(2, '0')}-${departure.day.toString().padLeft(2, '0')}"),
+                  label:Text(flagSetDepartureDate==false? 'From':"${departure.year.toString()}-${departure.month.toString().padLeft(2, '0')}-${departure.day.toString().padLeft(2, '0')}"),
                   onPressed: () async {
                     final selectedDate = await showDatePicker(
                       context: context,
@@ -262,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                       setState((){  
                         departure = selectedDate;
                       });
-                      flag_from = true;
+                      flagSetDepartureDate = true;
                     }
                   },
                 ),
@@ -270,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                 ElevatedButton.icon(
                   icon: Icon(Icons.calendar_today),
                   label: Text(
-                    flag==false? 'To':"${date.year.toString()}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+                    flagSetArrivalDate==false? 'To':"${date.year.toString()}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
                   ),
                   onPressed: () async {
                     final selectedDate = await showDatePicker(
@@ -283,7 +274,7 @@ class _HomePageState extends State<HomePage> {
                       setState((){
                         date = selectedDate;
                       });
-                      flag = true;
+                      flagSetArrivalDate = true;
                     }
                   },
                 ),
@@ -310,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                         icon: Icon(Icons.remove),
                         onPressed: _decrementCounter,
                       ),
-                      Text('$_num_people'),
+                      Text('$numPeople'),
                       IconButton(
                         icon: Icon(Icons.add),
                         onPressed: _incrementCounter,
@@ -331,15 +322,15 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("${_budget} 만원  "),
+                      Text("${budget} 만원  "),
                       Slider(
-                        value: _budget,
+                        value: budget,
                         max: 2000,
                         divisions: 2000,
-                        label: _budget.round().toString(),
+                        label: budget.round().toString(),
                         onChanged: (double value) {
                           setState(() {
-                            _budget = value;
+                            budget = value;
                           });
                         },
                       ),
@@ -444,10 +435,10 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           Checkbox(
-                            value: travel_style[0],
+                            value: travelStyle[0],
                             onChanged: (value) {
                               setState(() {
-                                travel_style[0] = value!;
+                                travelStyle[0] = value!;
                               });
                             },
                           ),
@@ -457,10 +448,10 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           Checkbox(
-                            value: travel_style[3],
+                            value: travelStyle[3],
                             onChanged: (value) {
                               setState(() {
-                                travel_style[3] = value!;
+                                travelStyle[3] = value!;
                               });
                             },
                           ),
@@ -476,10 +467,10 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           Checkbox(
-                            value: travel_style[1],
+                            value: travelStyle[1],
                             onChanged: (value) {
                               setState(() {
-                                travel_style[1] = value!;
+                                travelStyle[1] = value!;
                               });
                             },
                           ),
@@ -489,10 +480,10 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           Checkbox(
-                            value: travel_style[4],
+                            value: travelStyle[4],
                             onChanged: (value) {
                               setState(() {
-                                travel_style[4] = value!;
+                                travelStyle[4] = value!;
                               });
                             },
                           ),
@@ -508,10 +499,10 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           Checkbox(
-                            value: travel_style[2],
+                            value: travelStyle[2],
                             onChanged: (value) {
                               setState(() {
-                                travel_style[2] = value!;
+                                travelStyle[2] = value!;
                               });
                             },
                           ),
@@ -521,10 +512,10 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           Checkbox(
-                            value: travel_style[5],
+                            value: travelStyle[5],
                             onChanged: (value) {
                               setState(() {
-                                travel_style[5] = value!;
+                                travelStyle[5] = value!;
                               });
                             },
                           ),
@@ -534,9 +525,6 @@ class _HomePageState extends State<HomePage> {
                     ]
                   ),
                 ),
-                
-                
-                
               ]
             ),
             SizedBox(height: 30),
@@ -550,9 +538,28 @@ class _HomePageState extends State<HomePage> {
                     );
                   });
                 }else{
-                  widget.onSearch(departure, date, country, state, city, _num_people, _budget, accommodation, travel_style);
+                  final userInput = UserInput(
+                    command: command,
+                    departure: departure,
+                    arrival: date,
+                    country: country,
+                    state: state,
+                    city: city,
+                    numPeople: numPeople,
+                    budget: budget,
+                    accommodation: accommodation,
+                    travelStyle: travelStyle,
+                  );
+                  //UserInput Provider로 상태 변경
+                  context.read<UserInputProvider>().updateUserInput(userInput);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("여행 계획이 저장되었습니다.")),
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SearchPage()),
+                  );
                 }
-                
               },
           ),
           ],
