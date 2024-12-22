@@ -25,6 +25,8 @@ class _HomePageState extends State<HomePage> {
   bool flagSetArrivalDate = false; //사용자가 도착 날짜 선택했는지 여부
   String address = ""; // 사용자가 선택한 국가 및 도시 
 
+  List<String> travelStyleLables = ['휴양 및 힐링', '기념일', '호캉스', '가족여행', '관광','역사 탐방'];
+
   //numPeople increment
   void _incrementCounter() {
     setState(() {
@@ -353,8 +355,8 @@ class _HomePageState extends State<HomePage> {
                         case 3:
                           label = 'Airbnb';
                           break;
-                        default: // default는 실제로 실행되지 않음. 안전장치로만 존재.
-                          label = '알 수 없음';
+                        default:
+                          label = '';
                       }
                       return Row(
                         children: [
@@ -388,104 +390,28 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height:5),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children:[
-                Expanded(
+              children: List.generate(3, (colIndex) {
+                return Expanded(
                   child: Column(
-                    children:[
-                      Row(
+                    children: List.generate(2, (rowIndex) {
+                      int index = colIndex * 2 + rowIndex;
+                      return Row(
                         children: [
                           Checkbox(
-                            value: travelStyle[0],
+                            value: travelStyle[index],
                             onChanged: (value) {
                               setState(() {
-                                travelStyle[0] = value!;
+                                travelStyle[index] = value!;
                               });
                             },
                           ),
-                          Text('휴양 및 힐링'),
+                          Text(travelStyleLables[index]),
                         ],
-                      ),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: travelStyle[3],
-                            onChanged: (value) {
-                              setState(() {
-                                travelStyle[3] = value!;
-                              });
-                            },
-                          ),
-                          Text('가족 여행'),
-                        ],
-                      ),
-                    ]
+                      );
+                    }),
                   ),
-                ),
-                Expanded(
-                  child: Column(
-                    children:[
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: travelStyle[1],
-                            onChanged: (value) {
-                              setState(() {
-                                travelStyle[1] = value!;
-                              });
-                            },
-                          ),
-                          Text('기념일'),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: travelStyle[4],
-                            onChanged: (value) {
-                              setState(() {
-                                travelStyle[4] = value!;
-                              });
-                            },
-                          ),
-                          Text('관광'),
-                        ],
-                      ),
-                    ]
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children:[
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: travelStyle[2],
-                            onChanged: (value) {
-                              setState(() {
-                                travelStyle[2] = value!;
-                              });
-                            },
-                          ),
-                          Text('호캉스'),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: travelStyle[5],
-                            onChanged: (value) {
-                              setState(() {
-                                travelStyle[5] = value!;
-                              });
-                            },
-                          ),
-                          Text('역사 탐방'),
-                        ],
-                      ),
-                    ]
-                  ),
-                ),
-              ]
+                );
+              }),
             ),
             SizedBox(height: 30),
             ElevatedButton(
