@@ -8,6 +8,11 @@ import 'package:provider/provider.dart';
 // 상태 관리
 List<Map<String, dynamic>> favoritesList = [];
 
+//전역 변수
+final List<String> accommodationLabels = ['호텔', '게스트하우스', '리조트', 'Airbnb'];
+List<String> travelStyleLabels = ['휴양 및 힐링', '기념일', '호캉스', '가족여행', '관광','역사 탐방'];
+
+
 //사용자가 입력폼에 입력한 내용을 클래스로 묶기 (버튼 누르면 한 번에 업데이트)
 class UserInput {
   final String command;
