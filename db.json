@@ -12,18 +12,6 @@
       "budget": 20.0,
       "accommodation": 0,
       "travelStyle": [false, true, false, true, false, false]
-    },
-    {
-      "search_id": 1,
-      "departure": "2024-12-21T00:00:00", 
-      "arrival": "2024-12-23T00:00:00",
-      "country": "Japan",
-      "state": "Tokyo",
-      "city": "",
-      "numPeople": 5,
-      "budget": 32.0,
-      "accommodation": 3,
-      "travelStyle": [false, true, false, true, false, false]
     }
   ],
   "travel_plans": [
