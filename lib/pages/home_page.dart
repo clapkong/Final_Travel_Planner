@@ -193,35 +193,24 @@ class _HomePageState extends State<HomePage> {
                     dropdownDialogRadius: 15.0,//Dialog box radius
                     searchBarRadius: 15.0, //Search bar radius
 
-                    ///triggers once country selected in dropdown
                     onCountryChanged: (value) {
                       setState(() {
-                        ///store value in country variable
                         country = value;
                         _updateAddress();
                       });
                     },
-
-                    ///triggers once state selected in dropdown
                     onStateChanged: (value) {
                       setState(() {
-                        ///store value in state variable
                         state = value ?? '';
                         _updateAddress();
                       });
                     },
-
-                    ///triggers once city selected in dropdown
                     onCityChanged: (value) {
                       setState(() {
-                        ///store value in city variable
                         city = value ?? '';
                         _updateAddress();
                       });
                     },
-
-                    ///Show only specific countries using country filter
-                    // countryFilter: ["United States", "Canada", "Mexico"],
                   ),
                 ),
                 ],
@@ -349,11 +338,28 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
+                    children: List.generate(4, (index) {
+                      String label;
+                      switch (index) {
+                        case 0:
+                          label = '호텔';
+                          break;
+                        case 1:
+                          label = '게하';
+                          break;
+                        case 2:
+                          label = '리조트';
+                          break;
+                        case 3:
+                          label = 'Airbnb';
+                          break;
+                        default: // default는 실제로 실행되지 않음. 안전장치로만 존재.
+                          label = '알 수 없음';
+                      }
+                      return Row(
                         children: [
                           Radio(
-                            value: 0,
+                            value: index,
                             groupValue: accommodation,
                             onChanged: (value) {
                               setState(() {
@@ -361,59 +367,13 @@ class _HomePageState extends State<HomePage> {
                               });
                             },
                           ),
-                          Text('호텔'),
+                          Text(label),
+                          SizedBox(width: 20),
                         ],
-                      ),
-                      SizedBox(width: 20),
-                      Row(
-                        children: [
-                          Radio(
-                            value: 1,
-                            groupValue: accommodation,
-                            onChanged: (value) {
-                              setState(() {
-                                accommodation = value!;
-                              });
-                            },
-                          ),
-                          Text('게하'),
-                        ],
-                      ),
-                      SizedBox(width: 20),
-                      Row(
-                        children: [
-                          Radio(
-                            value: 2,
-                            groupValue: accommodation,
-                            onChanged: (value) {
-                              setState(() {
-                                accommodation = value!;
-                              });
-                            },
-                          ),
-                          Text('리조트'),
-                        ],
-                      ),
-                      SizedBox(width: 20),
-                      Row(
-                        children: [
-                          Radio(
-                            value: 3,
-                            groupValue: accommodation,
-                            onChanged: (value) {
-                              setState(() {
-                                accommodation = value!;
-                              });
-                            },
-                          ),
-                          Text('Airbnb'),
-                        ],
-                      ),
-                      SizedBox(width: 20),
-                    ]
-                  )
+                      );
+                    }),
+                  ),
                 ),
-                
               ]
             ),
             SizedBox(height: 15),
