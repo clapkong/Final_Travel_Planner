@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:travel_planner/pages/maps_page.dart';
 import 'package:travel_planner/pages/search_page.dart';
 import 'package:travel_planner/pages/favorites_page.dart';
 import 'package:travel_planner/pages/home_page.dart';
@@ -222,7 +221,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _pages = [
     HomePage(),         // 여행 정보 입력 페이지
     SearchPage(),       // 검색 결과 페이지
-    MapsPage(),         // 지도 페이지
     FavoritesPage(),    // 즐겨찾기 페이지
   ];
 
@@ -251,10 +249,6 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Maps',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
