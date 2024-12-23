@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:travel_planner/main.dart';
 import 'package:travel_planner/pages/results_page.dart'; // 결과 페이지 가져오기
 import 'package:provider/provider.dart';
+import 'package:travel_planner/widgets/itinerary.dart';
+import 'package:travel_planner/pseudodata.dart';
 
 class FavoritesPage extends StatefulWidget {
   @override
@@ -82,12 +84,49 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       final favorite = _filteredFavorites[index];
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ResultsPage(
-                                travelPlan: favorite, // travelPlan 전달
-                              ),
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true, // 스크롤 가능하게 설정
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                            ),
+                            builder: (context) => DraggableScrollableSheet(
+                              expand: false,
+                              initialChildSize: 0.66, // 초기 높이를 화면의 2/3로 설정
+                              minChildSize: 0.4, // 최소 높이를 화면의 40%로 설정
+                              maxChildSize: 0.9, // 최대 높이를 화면의 90%로 설정
+                              builder: (context, scrollController) {
+                                return Container(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '[${favorite.state}] ${favorite.title} 일정',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Row(
+                            children: [
+                              Icon(Icons.calendar_today, color: Colors.cyan[900], size: 18),
+                              SizedBox(width: 5),
+                              Text('Date: ${favorite.date}', style: TextStyle(fontSize: 14)),
+                            ],
+                          ),
+                                      SizedBox(height: 10),
+                                      // ScheduleList를 포함하는 Flexible
+                                      Flexible(
+                                        child: ScheduleList(
+                                          scheduleData: pseudoItinerary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },
