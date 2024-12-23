@@ -22,7 +22,7 @@ class _ScheduleListState extends State<ScheduleList> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(width: 16),
-            ...List.generate(3, (index) {
+            ...List.generate(widget.scheduleData.keys.length, (index) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: ChoiceChip(
@@ -89,7 +89,6 @@ List<Widget> getScheduleItemsForDay(Map<String, dynamic> scheduleData, int day) 
     );
   }).toList();
 }
-
 
 class DashedLine extends StatelessWidget {
   @override
@@ -193,10 +192,6 @@ class ScheduleItem extends StatelessWidget {
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {},
                           ),
                         ],
                       ),
