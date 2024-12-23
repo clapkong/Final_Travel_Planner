@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:travel_planner/pages/search_page.dart';
 import 'package:travel_planner/pages/favorites_page.dart';
 import 'package:travel_planner/pages/home_page.dart';
-import 'package:travel_planner/pages/results_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';

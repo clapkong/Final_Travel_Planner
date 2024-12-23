@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/main.dart';
-import 'package:travel_planner/pages/results_page.dart'; // 결과 페이지 가져오기
 import 'package:provider/provider.dart';
 import 'package:travel_planner/widgets/itinerary.dart';
 import 'package:travel_planner/pseudodata.dart';

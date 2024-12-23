@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/pages/results_page.dart';
-import 'package:travel_planner/pages/home_page.dart';
 import 'package:travel_planner/main.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_planner/pseudodata.dart';

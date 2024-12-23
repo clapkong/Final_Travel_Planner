@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:travel_planner/main.dart';
-import 'package:travel_planner/pages/favorites_page.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_planner/pages/search_page.dart';
 import 'package:travel_planner/pseudodata.dart';
 import 'package:travel_planner/widgets/itinerary.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ResultsPage extends StatefulWidget {
   final dynamic travelPlan;
