@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:travel_planner/pages/maps_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:travel_planner/main.dart';
 import 'package:travel_planner/pages/favorites_page.dart';
@@ -40,18 +39,12 @@ class _ResultsPageState extends State<ResultsPage> {
     if (travelInfo == null) {
       return Scaffold(
         appBar: widgetAppBar(context, 'Detailed Page'),
-        body: Center(child: Text('저장된 여행 정보가 없습니다.')),
+        body: widgetEmptyPage(),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Detailed Page',
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.cyan[900]),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
-      ),
+      appBar: widgetAppBar(context, 'Detailed Page'),
       body: Column(
         children: [
           CarouselWithOverlay(travelInfo:travelInfo, travelPlan: travelPlan),
@@ -71,15 +64,6 @@ class _ResultsPageState extends State<ResultsPage> {
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                FilledButton(
-                  onPressed: () {
-                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MapsPage()),
-                    );
-                  },
-                  child: Text('지도에서 보기'),
                 ),
               ],
             ),
@@ -149,10 +133,7 @@ class _CarouselWithOverlayState extends State<CarouselWithOverlay> {
     final isFavorite = context.read<FavoritesProvider>().isFavorite(searchID, travelPlanID);
 
     if (travelInfo == null) {
-      return Scaffold(
-        appBar: AppBar(title: Text('Search Page')),
-        body: Center(child: Text('저장된 여행 정보가 없습니다.')),
-      );
+      return SizedBox();
     }
 
     String date = formatDateRange(travelInfo.departure, travelInfo.arrival);
