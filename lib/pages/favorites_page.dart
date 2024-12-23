@@ -42,13 +42,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Favorites',
-          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.cyan[900]),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary.withOpacity(0.75),
-      ),
+      appBar: widgetAppBar(context, 'Favorites'),
       body: Column(
         children: [
           // 검색창
