@@ -172,7 +172,6 @@ class _HomePageState extends State<HomePage> {
             Icon(Icons.place, color: themeColor900, size: subIconSize), 
             SizedBox(width: 8),
             Text('목적지(Destination): ', style: subtitletextStyle),
-            
           ],
         ),
         SizedBox(height:5),
@@ -329,110 +328,41 @@ class _HomePageState extends State<HomePage> {
     );
   }
   Widget _widgetNumPeopleCounter(){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children:[
-        Icon(Icons.group, color: themeColor900, size: subIconSize), 
-        SizedBox(width: 8),
-        Text('여행 인원:', style: subtitletextStyle),
-        SizedBox(width: 120),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: Icon(Icons.remove),
-                onPressed: _decrementCounter,
-              ),
-              Text('$numPeople'),
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: _incrementCounter,
-              ),
-            ]
-          )
-        ),
-      ],
-    );
+    return NumPeopleCounter(
+    numPeople: numPeople,
+    increment: _incrementCounter,
+    decrement: _decrementCounter,
+    subtitleTextStyle: subtitletextStyle,
+    iconColor: themeColor900,
+    iconSize: subIconSize,
+  );
+
   }
   Widget _widgetBudgetSlider(){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children:[
-        Icon(Icons.attach_money, color: themeColor900, size: subIconSize), 
-        SizedBox(width: 8),
-        Text('예산(만원):  ', style: subtitletextStyle),
-        SizedBox(width: 80),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("${budget} 만원  "),
-              Slider(
-                value: budget,
-                max: 2000,
-                divisions: 2000,
-                label: budget.round().toString(),
-                onChanged: (double value) {
-                  setState(() {
-                    budget = value;
-                  });
-                },
-              ),
-            ]
-          )
-        ),
-      ]
-    );
+    return BudgetSlider(
+    budget: budget,
+    onChanged: (value) {
+      setState(() {
+        budget = value;
+      });
+    },
+    subtitleTextStyle: subtitletextStyle,
+    iconColor: themeColor900,
+    iconSize: subIconSize,
+  );
   }
   Widget _widgetAccommodationSelector(){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children:[
-        Icon(Icons.hotel, color: themeColor900, size: subIconSize), 
-        SizedBox(width: 8),
-        Text('선호하는 숙소 유형: ', style: subtitletextStyle),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(4, (index) {
-              String label;
-              switch (index) {
-                case 0:
-                  label = '호텔';
-                  break;
-                case 1:
-                  label = '게하';
-                  break;
-                case 2:
-                  label = '리조트';
-                  break;
-                case 3:
-                  label = 'Airbnb';
-                  break;
-                default:
-                  label = '';
-              }
-              return Row(
-                children: [
-                  Radio(
-                    value: index,
-                    groupValue: accommodation,
-                    onChanged: (value) {
-                      setState(() {
-                        accommodation = value!;
-                      });
-                    },
-                  ),
-                  Text(label),
-                  SizedBox(width: 20),
-                ],
-              );
-            }),
-          ),
-        ),
-      ]
-    );
+    return AccommodationSelector(
+    accommodation: accommodation,
+    onChanged: (value) {
+      setState(() {
+        accommodation = value!;
+      });
+    },
+    subtitleTextStyle: subtitletextStyle,
+    iconColor: themeColor900,
+    iconSize: subIconSize,
+  );
   }
   Widget _widgetTravelStyleSelector(){
     return Column(
@@ -515,6 +445,171 @@ class _HomePageState extends State<HomePage> {
           }
         },
       )
+    );
+  }
+}
+
+abstract class SimpleInputField extends StatelessWidget {
+  final TextStyle subtitleTextStyle;
+  final Color? iconColor;
+  final double? iconSize;
+  final String label;
+  final IconData icon;
+
+  const SimpleInputField({
+    required this.subtitleTextStyle,
+    required this.iconColor,
+    required this.iconSize,
+    required this.label,
+    required this.icon,
+    Key? key,
+  }) : super(key: key);
+
+  Widget buildContent(BuildContext context);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Icon(icon, color: iconColor, size: iconSize),
+        SizedBox(width: 8),
+        Text(label, style: subtitleTextStyle),
+        Expanded(
+          child: buildContent(context),
+        ),
+      ],
+    );
+  }
+}
+
+class NumPeopleCounter extends SimpleInputField {
+  final int numPeople;
+  final VoidCallback increment;
+  final VoidCallback decrement;
+
+  const NumPeopleCounter({
+    required this.numPeople,
+    required this.increment,
+    required this.decrement,
+    required TextStyle subtitleTextStyle,
+    Color? iconColor,
+    double? iconSize,
+  }) : super(
+          subtitleTextStyle: subtitleTextStyle,
+          iconColor: iconColor,
+          iconSize: iconSize,
+          label: '여행 인원:',
+          icon: Icons.group,
+        );
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          icon: Icon(Icons.remove),
+          onPressed: decrement,
+        ),
+        Text('$numPeople'),
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: increment,
+        ),
+      ],
+    );
+  }
+}
+
+class BudgetSlider extends SimpleInputField {
+  final double budget;
+  final ValueChanged<double> onChanged;
+
+  const BudgetSlider({
+    required this.budget,
+    required this.onChanged,
+    required TextStyle subtitleTextStyle,
+    Color? iconColor,
+    double? iconSize,
+  }) : super(
+          subtitleTextStyle: subtitleTextStyle,
+          iconColor: iconColor,
+          iconSize: iconSize,
+          label: '예산(만원):',
+          icon: Icons.attach_money,
+        );
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("${budget} 만원  "),
+        Slider(
+          value: budget,
+          max: 2000,
+          divisions: 2000,
+          label: budget.round().toString(),
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+}
+
+class AccommodationSelector extends SimpleInputField {
+  final int accommodation;
+  final ValueChanged<int?> onChanged;
+
+  const AccommodationSelector({
+    required this.accommodation,
+    required this.onChanged,
+    required TextStyle subtitleTextStyle,
+    Color? iconColor,
+    double? iconSize,
+  }) : super(
+          subtitleTextStyle: subtitleTextStyle,
+          iconColor: iconColor,
+          iconSize: iconSize,
+          label: '선호하는 숙소 유형:',
+          icon: Icons.hotel,
+        );
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(4, (index) {
+        String label;
+        switch (index) {
+          case 0:
+            label = '호텔';
+            break;
+          case 1:
+            label = '게하';
+            break;
+          case 2:
+            label = '리조트';
+            break;
+          case 3:
+            label = 'Airbnb';
+            break;
+          default:
+            label = '';
+        }
+        return Row(
+          children: [
+            Radio(
+              value: index,
+              groupValue: accommodation,
+              onChanged: onChanged,
+            ),
+            Text(label),
+            SizedBox(width: 20),
+          ],
+        );
+      }),
     );
   }
 }
