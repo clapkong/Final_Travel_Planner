@@ -3,8 +3,6 @@ import 'package:csc_picker/csc_picker.dart';
 import 'package:travel_planner/main.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_planner/pages/search_page.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt; 
-import 'package:flutter_tts/flutter_tts.dart'; 
 
 class HomePage extends StatefulWidget {
   @override
@@ -133,16 +131,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.mic, color: themeColor900),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('음성 인식이 완료되었습니다.'),
-                  ),
-                );
-              },
             ),
           ],
         ),

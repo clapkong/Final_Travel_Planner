@@ -46,7 +46,7 @@ class _ResultsPageState extends State<ResultsPage> {
         children: [
           CarouselWithOverlay(travelInfo:travelInfo, travelPlan: travelPlan),
           SizedBox(height: 20),
-          Flexible(child:ScheduleList(scheduleData: pseudoItinerary)),
+          Flexible(child:ScheduleList(scheduleData: fetchItineraryById(dbjson, travelPlan.id))),
         ],
       ),
       bottomNavigationBar: BottomAppBar(

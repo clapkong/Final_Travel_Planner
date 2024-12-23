@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 
+Map<String, List<Map<String, dynamic>>> fetchItineraryById(
+    Map<String, dynamic> dbjson, int id) {
+  if (dbjson.containsKey('travel_itinery') &&
+      dbjson['travel_itinery'].containsKey('$id')) {
+    return Map<String, List<Map<String, dynamic>>>.from(
+        dbjson['travel_itinery']['$id']);
+  }
+  return {}; // id에 맞는 itinerary가 없으면 빈 데이터 반환
+}
+
 class ScheduleList extends StatefulWidget {
   final Map<String, dynamic> scheduleData;
 

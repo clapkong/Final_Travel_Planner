@@ -157,7 +157,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                       // ScheduleList를 포함하는 Flexible
                                       Flexible(
                                         child: ScheduleList(
-                                          scheduleData: pseudoItinerary,
+                                          scheduleData: fetchItineraryById(dbjson, favorite.travelPlanID),
                                         ),
                                       ),
                                     ],
