@@ -3,10 +3,10 @@ import 'package:travel_planner/pages/maps_page.dart';
 import 'package:travel_planner/pages/search_page.dart';
 import 'package:travel_planner/pages/favorites_page.dart';
 import 'package:travel_planner/pages/home_page.dart';
+import 'package:travel_planner/pages/results_page.dart';
 import 'package:provider/provider.dart';
-
-// 상태 관리
-List<Map<String, dynamic>> favoritesList = [];
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 //전역 변수
 final List<String> accommodationLabels = ['호텔', '게스트하우스', '리조트', 'Airbnb'];
@@ -34,33 +34,6 @@ String formatDateRange(DateTime departure, DateTime arrival) {
 
 String formatDate(DateTime date){
   return '${date.year}.${date.month.toString().padLeft(2, '0')}.${date.day.toString().padLeft(2, '0')}';
-}
-
-List<Widget> getScheduleItemsForDay(Map<String, dynamic> scheduleData, int day) {
-  String dayKey = 'Day$day';
-  if (!scheduleData.containsKey(dayKey)) {
-    return [Text('해당 날짜의 일정이 없습니다.')];
-  }
-
-  return (scheduleData[dayKey] as List<dynamic>).map<Widget>((item) {
-    return Column(
-      children: [
-        ScheduleItem(
-          index: item['index'],
-          time: item['time'],
-          title: item['title'],
-          location: item['location'] ?? null,
-          subwayInfo: item['subwayInfo'] ?? null,
-          cost: item.containsKey('cost') ? '${item['cost']} ₩' : null,
-          icons: List<IconData>.generate(
-            3, // 기본 아이콘 갯수
-            (index) => Icons.image,
-          ),
-        ),
-        SizedBox(height: 16),
-      ],
-    );
-  }).toList();
 }
 
 //사용자가 입력폼에 입력한 내용을 클래스로 묶기 (버튼 누르면 한 번에 업데이트)
@@ -102,10 +75,117 @@ class UserInputProvider with ChangeNotifier {
   }
 }
 
+class FavoritesItem {
+  final String title;
+  final String country;
+  final String state;
+  final String path;
+  final String date;
+  final int searchID;
+  final int travelPlanID;
+
+  FavoritesItem({required this.title, required this.country, required this.state, required this.path, required this.searchID, required this.travelPlanID, required this.date});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'country': country,
+      'state': state,
+      'path': path,
+      'date': date,
+      'searchID': searchID,
+      'travelPlanID': travelPlanID,
+    };
+  }
+
+  factory FavoritesItem.fromMap(Map<String, dynamic> map) {
+    return FavoritesItem(
+      title: map['title'],
+      country: map['country'],
+      state: map['state'],
+      path: map['path'],
+      date: map['date'],
+      searchID: map['searchID'],
+      travelPlanID: map['travelPlanID'],
+    );
+  }
+}
+
+class FavoritesStorage {
+  static const _favoritesKey = 'favoritesList';
+
+  // Save the list of favorites
+  static Future<void> saveFavorites(List<FavoritesItem> favorites) async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> jsonList = favorites.map((item) => jsonEncode(item.toMap())).toList();
+    await prefs.setStringList(_favoritesKey, jsonList);
+  }
+
+  // Load the list of favorites
+  static Future<List<FavoritesItem>> loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? jsonList = prefs.getStringList(_favoritesKey);
+
+    if (jsonList == null) return [];
+
+    return jsonList.map((item) => FavoritesItem.fromMap(jsonDecode(item))).toList();
+  }
+
+  // Add a single favorite item
+  static Future<void> addFavorite(FavoritesItem item) async {
+    final favorites = await loadFavorites();
+    favorites.add(item);
+    await saveFavorites(favorites);
+  }
+
+  // Remove a single favorite item
+  static Future<void> removeFavorite(int searchID, int travelPlanID) async {
+    final favorites = await loadFavorites();
+    favorites.removeWhere(
+        (item) => item.searchID == searchID && item.travelPlanID == travelPlanID);
+    await saveFavorites(favorites);
+  }
+}
+
+class FavoritesProvider extends ChangeNotifier {
+  List<FavoritesItem> _favorites = [];
+
+  List<FavoritesItem> get favorites => _favorites;
+
+  FavoritesProvider() {
+    _loadFavorites();
+  }
+
+  Future<void> _loadFavorites() async {
+    _favorites = await FavoritesStorage.loadFavorites();
+    notifyListeners();
+  }
+
+  void addFavorite(FavoritesItem item) async {
+    _favorites.add(item);
+    await FavoritesStorage.saveFavorites(_favorites);
+    notifyListeners();
+  }
+
+  void removeFavorite(int searchID, int travelPlanID) async {
+    _favorites.removeWhere((item) => item.searchID == searchID && item.travelPlanID == travelPlanID);
+    await FavoritesStorage.saveFavorites(_favorites);
+    notifyListeners();
+  }
+
+  bool isFavorite(int searchID, int travelPlanID) {
+    return _favorites.any(
+        (item) => item.searchID == searchID && item.travelPlanID == travelPlanID);
+  }
+}
+
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserInputProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserInputProvider()),
+        ChangeNotifierProvider(create: (context) => FavoritesProvider()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -143,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
     HomePage(),         // 여행 정보 입력 페이지
     SearchPage(),       // 검색 결과 페이지
     MapsPage(),         // 지도 페이지
-    FavoritesPage(favoritesList: favoritesList),    // 즐겨찾기 페이지
+    FavoritesPage(),    // 즐겨찾기 페이지
   ];
 
   void _onItemTapped(int index) {
