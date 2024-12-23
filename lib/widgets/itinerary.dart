@@ -1,5 +1,72 @@
 import 'package:flutter/material.dart';
 
+class ScheduleList extends StatefulWidget {
+  final Map<String, dynamic> scheduleData;
+
+  const ScheduleList({
+    required this.scheduleData,
+  });
+
+  @override
+  _ScheduleListState createState() => _ScheduleListState();
+}
+
+class _ScheduleListState extends State<ScheduleList> {
+  int currentDay = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(width: 16),
+            ...List.generate(3, (index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: ChoiceChip(
+                  label: Text('Day ${index + 1}'),
+                  selected: currentDay == (index + 1),
+                  onSelected: (bool selected) {
+                    if (selected) {
+                      setState(() {
+                        currentDay = index + 1;
+                      });
+                    }
+                  },
+                ),
+              );
+            }),
+          ],
+        ),
+        SizedBox(height: 20),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: [
+              Stack(
+                children: [
+                  Positioned(
+                    left: 20,
+                    top: 0,
+                    bottom: 0,
+                    child: DashedLine(),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: getScheduleItemsForDay(widget.scheduleData, currentDay),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 List<Widget> getScheduleItemsForDay(Map<String, dynamic> scheduleData, int day) {
   String dayKey = 'Day$day';
   if (!scheduleData.containsKey(dayKey)) {
