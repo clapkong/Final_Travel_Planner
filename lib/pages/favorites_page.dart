@@ -102,13 +102,51 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        '[${favorite.state}] ${favorite.title} 일정',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                                      Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                '[${favorite.state}] ${favorite.title} 일정',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 2, // 길이가 긴 제목도 처리 가능하도록 설정
+                overflow: TextOverflow.ellipsis, // 제목이 길면 생략 처리
+              ),
+            ),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red, // 버튼 색상
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              ),
+              onPressed: () {
+                // 즐겨찾기 삭제 기능
+                context
+                    .read<FavoritesProvider>()
+                    .removeFavorite(favorite.searchID, favorite.travelPlanID);
+                Navigator.pop(context); // Bottom Sheet 닫기
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${favorite.title}가 즐겨찾기에서 삭제되었습니다.'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+              icon: Icon(Icons.delete, size: 16, color: Colors.white),
+              label: Text(
+                '삭제',
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 10),
                                       Row(
                             children: [
                               Icon(Icons.calendar_today, color: Colors.cyan[900], size: 18),
