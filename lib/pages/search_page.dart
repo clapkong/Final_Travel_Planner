@@ -4,6 +4,31 @@ import 'package:travel_planner/main.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_planner/pseudodata.dart';
 
+List<TravelPlan> getTravelPlansFromDb(Map<String, dynamic> dbjson, int searchId) {
+  if (!dbjson.containsKey('travel_plans')) {
+    return []; // travel_plans가 없으면 빈 리스트 반환
+  }
+
+  // dbjson['travel_plans']에서 search_id가 일치하는 데이터 필터링
+  return (dbjson['travel_plans'] as List<dynamic>)
+      .where((plan) => plan["search_id"] == searchId)
+      .map((plan) {
+        return TravelPlan(
+          id: plan["id"],
+          search_id: plan["search_id"],
+          title: plan["title"],
+          img1: plan["img1"],
+          img2: plan["img2"],
+          img3: plan["img3"],
+          hotel: plan["hotel"],
+          keyword: plan["keyword"],
+          price: plan["price"],
+          summary: plan["summary"],
+        );
+      })
+      .toList();
+}
+
 class TravelPlan {
   final int id;
   final int search_id;
@@ -38,24 +63,13 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   bool _customTileExpanded = false;
 
-  final List<TravelPlan> travel_plans = pseudoTravelPlan.map((plan) {
-  return TravelPlan(
-    id: plan["id"],
-    search_id: plan["search_id"],
-    title: plan["title"],
-    img1: plan["img1"],
-    img2: plan["img2"], 
-    img3: plan["img3"],
-    hotel: plan["hotel"],
-    keyword: plan["keyword"],
-    price: plan["price"],
-    summary: plan["summary"],
-  );
-  }).toList();
-
   @override
   Widget build(BuildContext context) {
     final travelInfo = context.watch<UserInputProvider>().userInput;
+     // dbjson과 search_id를 이용해 필터링된 travel plans 가져오기
+    final List<TravelPlan> travel_plans = travelInfo != null
+        ? getTravelPlansFromDb(dbjson, 1)
+        : [];
     return Scaffold(
       appBar: widgetAppBar(context, 'Search Page'),
       body: travelInfo == null
@@ -64,7 +78,7 @@ class _SearchPageState extends State<SearchPage> {
         children:<Widget>[
         _widgetExpansionTile(context, travelInfo, formatDateRange(travelInfo.departure, travelInfo.arrival)),
         const SizedBox(height:10),
-        _widgetTravelPlanListView(context)
+        _widgetTravelPlanListView(context, travel_plans)
         ]
       )
     );
@@ -174,7 +188,7 @@ class _SearchPageState extends State<SearchPage> {
       },
     );
   }
-  Widget _widgetTravelPlanListView(context){
+  Widget _widgetTravelPlanListView(context, List<TravelPlan> travel_plans){
     return Expanded(
       child: ListView.builder(
         itemCount: travel_plans.length,

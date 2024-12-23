@@ -31,7 +31,7 @@ Map<String, dynamic> dbjson = {
       "id": 2,
       "search_id": 1,
       "title": "호수와 평온함",
-      "img": "assets/images/travel_2.jpg",
+      "img1": "assets/images/travel_2.jpg",
       "img2": "assets/images/carousel_1.jpg",
       "img3": "assets/images/carousel_2.jpg",
       "hotel": "메리어트",
@@ -43,7 +43,7 @@ Map<String, dynamic> dbjson = {
       "id": 3,
       "search_id": 1,
       "title": "예술과 정원",
-      "img": "assets/images/travel_3.jpg",
+      "img1": "assets/images/travel_3.jpg",
       "img2": "assets/images/carousel_1.jpg",
       "img3": "assets/images/carousel_2.jpg",
       "hotel": "조선",
@@ -55,7 +55,7 @@ Map<String, dynamic> dbjson = {
       "id": 4,
       "search_id": 1,
       "title": "해변과 여유",
-      "img": "assets/images/travel_4.jpg",
+      "img1": "assets/images/travel_4.jpg",
       "img2": "assets/images/carousel_1.jpg",
       "img3": "assets/images/carousel_2.jpg",
       "hotel": "하얏트",
@@ -67,7 +67,7 @@ Map<String, dynamic> dbjson = {
       "id": 5,
       "search_id": 1,
       "title": "시장과 오솔길",
-      "img": "assets/images/travel_5.jpg",
+      "img1": "assets/images/travel_5.jpg",
       "img2": "assets/images/carousel_1.jpg",
       "img3": "assets/images/carousel_2.jpg",
       "hotel": "쉐라톤",
@@ -79,7 +79,7 @@ Map<String, dynamic> dbjson = {
       "id": 6,
       "search_id": 1,
       "title": "성과 정원",
-      "img": "assets/images/travel_6.jpg",
+      "img1": "assets/images/travel_6.jpg",
       "img2": "assets/images/carousel_1.jpg",
       "img3": "assets/images/carousel_2.jpg",
       "hotel": "콘래드",
@@ -91,7 +91,7 @@ Map<String, dynamic> dbjson = {
       "id": 7,
       "search_id": 1,
       "title": "예술 여행",
-      "img": "assets/images/travel_7.jpg",
+      "img1": "assets/images/travel_7.jpg",
       "img2": "assets/images/carousel_1.jpg",
       "img3": "assets/images/carousel_2.jpg",
       "hotel": "한화",
@@ -103,7 +103,7 @@ Map<String, dynamic> dbjson = {
       "id": 8,
       "search_id": 2,
       "title": "자연과 트레킹",
-      "img": "assets/images/travel_7.jpg",
+      "img1": "assets/images/travel_7.jpg",
       "img2": "assets/images/carousel_1.jpg",
       "img3": "assets/images/carousel_2.jpg",
       "hotel": "프린스",
@@ -638,7 +638,7 @@ Map<String, List<Map<String, dynamic>>> pseudoItinerary = {
     }
   ]
 };*/
-
+/*
 //ChatGPT로 생성한 가상 관광지
 final List<Map<String, dynamic>> pseudoTravelPlan = [{
       "id": 1,
@@ -723,4 +723,4 @@ final List<Map<String, dynamic>> pseudoTravelPlan = [{
       "keyword": "역사적",
       "price": 20.0,
       "summary": "엘토아 해양 박물관, 나리아 성벽 투어, 세라노 거리 예술"
-    }];
+    }];*/

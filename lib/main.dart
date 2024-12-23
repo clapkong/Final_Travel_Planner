@@ -36,6 +36,7 @@ String formatDate(DateTime date){
 
 //사용자가 입력폼에 입력한 내용을 클래스로 묶기 (버튼 누르면 한 번에 업데이트)
 class UserInput {
+  final int search_id;
   final String command;
   final DateTime departure;
   final DateTime arrival;
@@ -48,6 +49,7 @@ class UserInput {
   final List<bool> travelStyle;
 
   UserInput({
+    required this.search_id,
     required this.command,
     required this.departure,
     required this.arrival,

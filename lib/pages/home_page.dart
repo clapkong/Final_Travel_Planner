@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> {
       )
     );
   }
-  //TODO: 수정 필요
   Widget _widgetAICommandInput() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -412,6 +411,7 @@ class _HomePageState extends State<HomePage> {
                 command = _textController.text;
             });}
             final userInput = UserInput(
+              search_id: 1,//TODO: UNIQUE KEY 생성
               command: command,
               departure: departure,
               arrival: arrival,
