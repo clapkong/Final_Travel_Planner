@@ -56,6 +56,9 @@ class _SearchPageState extends State<SearchPage> {
       _isLoading = false;
     });
   }
+  bool _customTileExpanded = false;
+  final List<String> accommodationLabels = ['호텔', '게스트하우스', '리조트', 'Airbnb'];
+  List<String> travelStyleLabels = ['휴양 및 힐링', '기념일', '호캉스', '가족여행', '관광','역사 탐방'];
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +75,108 @@ class _SearchPageState extends State<SearchPage> {
               : _buildSearchResult(),
     );
   }
+  Widget _widgetExpansionTile(BuildContext context, TravelSearchRequest request, String date) {
+  return ExpansionTile(
+    backgroundColor: Colors.cyan[50],
+    collapsedBackgroundColor: Colors.cyan[50],
+    tilePadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+    childrenPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+    title: Row(
+      children: [
+        Icon(Icons.info, color: Colors.cyan.shade900),
+        SizedBox(width: 8.0),
+        Text(
+          'Travel Plans for ${request.state}, ${request.country}',
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w600,
+            color: Colors.black.withOpacity(0.8),
+          ),
+        ),
+      ],
+    ),
+    subtitle: Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Row(
+        children: [
+          Icon(Icons.calendar_today, size: 16.0, color: Colors.cyan.shade700),
+          SizedBox(width: 6.0),
+          Text(
+            date,
+            style: TextStyle(fontSize: 14.0, color: Colors.grey.shade700),
+          ),
+        ],
+      ),
+    ),
+    trailing: Icon(
+      _customTileExpanded ? Icons.arrow_drop_down_circle : Icons.arrow_drop_down,
+      color: Colors.cyan.shade900,
+    ),
+    onExpansionChanged: (bool expanded) {
+      setState(() {
+        _customTileExpanded = expanded;
+      });
+    },
+    children: [
+      ListTile(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.person, size: 18.0, color: Colors.cyan.shade900),
+                SizedBox(width: 8.0),
+                Text(
+                  '인원: ${request.numPeople}명',
+                  style: TextStyle(fontSize: 14.0),
+                ),
+                SizedBox(width: 16.0),
+                Icon(Icons.paid, size: 18.0, color: Colors.cyan.shade900),
+                SizedBox(width: 8.0),
+                Text(
+                  '예산: ${request.budget}만원',
+                  style: TextStyle(fontSize: 14.0),
+                ),
+              ],
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              children: [
+                Icon(Icons.hotel, size: 18.0, color: Colors.cyan.shade900),
+                SizedBox(width: 8.0),
+                Text(
+                  '숙소: ${accommodationLabels[request.accommodation]}',
+                  style: TextStyle(fontSize: 14.0),
+                ),
+              ],
+            ),
+            SizedBox(height: 12.0),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 4.0,
+              children: request.travelStyle
+                  .asMap()
+                  .entries
+                  .where((entry) => entry.value)
+                  .map(
+                    (entry) => Chip(
+                      label: Text(
+                        travelStyleLabels[entry.key],
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                      backgroundColor: Colors.cyan.shade50,
+                      side: BorderSide(color: Colors.cyan.shade900),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
 
   Widget _buildSearchResult() {
     // 아무 일정도 없으면 안내 문구
@@ -102,10 +207,34 @@ class _SearchPageState extends State<SearchPage> {
             .isFavorite(searchID, travelPlanID);
 
         return Card(
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          elevation: 4.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          margin: EdgeInsets.only(bottom: 16.0),
           child: ListTile(
-            title: Text(planName),
-            subtitle: Text(summary),
+            contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            leading: CircleAvatar(
+              backgroundImage: AssetImage('assets/images/travel_1.jpg'),
+              radius: 28.0,
+            ),
+            title: Text(
+              planName,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.cyan.shade900,
+              ),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                summary,
+                style: TextStyle(fontSize: 14.0, color: Colors.grey.shade600),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             onTap: () {
               // 상세페이지로 이동
               Navigator.push(
