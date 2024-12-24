@@ -1,59 +1,13 @@
+// lib/pages/search_page.dart
 import 'package:flutter/material.dart';
-import 'package:travel_planner/pages/results_page.dart';
-import 'package:travel_planner/main.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_planner/pseudodata.dart';
+import '../providers/travel_search_provider.dart';
+import '../services/chatgpt_service.dart';
+import '../models/travel_search_request.dart';
+import 'results_page.dart';
 
-List<TravelPlan> getTravelPlansFromDb(Map<String, dynamic> dbjson, int searchId) {
-  if (!dbjson.containsKey('travel_plans')) {
-    return []; // travel_plans가 없으면 빈 리스트 반환
-  }
-
-  // dbjson['travel_plans']에서 search_id가 일치하는 데이터 필터링
-  return (dbjson['travel_plans'] as List<dynamic>)
-      .where((plan) => plan["search_id"] == searchId)
-      .map((plan) {
-        return TravelPlan(
-          id: plan["id"],
-          search_id: plan["search_id"],
-          title: plan["title"],
-          img1: plan["img1"],
-          img2: plan["img2"],
-          img3: plan["img3"],
-          hotel: plan["hotel"],
-          keyword: plan["keyword"],
-          price: plan["price"],
-          summary: plan["summary"],
-        );
-      })
-      .toList();
-}
-
-class TravelPlan {
-  final int id;
-  final int search_id;
-  final String title;
-  final String img1;
-  final String img2;
-  final String img3;
-  final String hotel;
-  final String keyword;
-  final double price;
-  final String summary;
-
-  TravelPlan({
-    required this.id,
-    required this.search_id,
-    required this.title,
-    required this.img1,
-    required this.img2,
-    required this.img3,
-    required this.hotel,
-    required this.keyword,
-    required this.price,
-    required this.summary,
-  });
-}
+// 즐겨찾기 관련
+import '../providers/favorites_provider.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -61,242 +15,144 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  bool _customTileExpanded = false;
+  bool _isLoading = false;
+  Map<String, dynamic>? _chatGptResult;
+  List<dynamic> _travelPlans = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPlanFromChatGPT();
+  }
+
+  Future<void> _fetchPlanFromChatGPT() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final request = context.read<TravelSearchProvider>().request;
+    if (request == null) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      // ChatGPT 응답 받아오기
+      final response = await ChatGPTService().fetchTravelPlan(request);
+      _chatGptResult = response["assistantMessageParsed"];
+
+      // "travelPlans" 배열 파싱
+      if (_chatGptResult != null &&
+          _chatGptResult!.containsKey("travelPlans")) {
+        _travelPlans = _chatGptResult!["travelPlans"];
+      }
+    } catch (e) {
+      print("Error fetching plan: $e");
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final travelInfo = context.watch<UserInputProvider>().userInput;
-     // dbjson과 search_id를 이용해 필터링된 travel plans 가져오기
-    final List<TravelPlan> travel_plans = travelInfo != null
-        ? getTravelPlansFromDb(dbjson, 1)
-        : [];
+    final request = context.watch<TravelSearchProvider>().request;
+
     return Scaffold(
-      appBar: widgetAppBar(context, 'Search Page'),
-      body: travelInfo == null
-      ? widgetEmptyPage()
-      : Column(
-        children:<Widget>[
-        _widgetExpansionTile(context, travelInfo, formatDateRange(travelInfo.departure, travelInfo.arrival)),
-        const SizedBox(height:10),
-        _widgetTravelPlanListView(context, travel_plans)
-        ]
-      )
+      appBar: AppBar(
+        title: Text('Search Page'),
+      ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : (request == null)
+              ? Center(child: Text('Home Page에서 정보를 입력하세요'))
+              : _buildSearchResult(),
     );
   }
-  Widget _widgetExpansionTile(BuildContext context, UserInput travelInfo, String date){
-    return ExpansionTile(
-      backgroundColor: Colors.cyan[50],
-      collapsedBackgroundColor: Colors.cyan[50],
-      // Expansion Tile 제목
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, 
-        children:[
-          SizedBox(height:5),
-          Row(
-            children: [
-              SizedBox(width:10),
-              Text('Showing Travel Plans for: ', style:TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.black.withOpacity(0.75))), 
-            ]
-          ),
-          SizedBox(height:8)]
-        ),
-      // Tile 세부 내용 
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, 
-        children: [
-          Row(
-            children:[
-              SizedBox(width:10),
-              Icon(Icons.location_on, color: Colors.cyan[900]!.withOpacity(0.75)),
-              SizedBox(width: 8.0),
-              Text('${travelInfo.state}, ${travelInfo.country}', style: TextStyle(fontSize: 14.0)),
-            ]
-          ), 
-          SizedBox(height:8), 
-          Row(
-            children:[
-              SizedBox(width:10),
-              Icon(Icons.calendar_today, color: Colors.cyan[900]!.withOpacity(0.75)),
-              SizedBox(width: 8.0),
-              Text('$date', style: TextStyle(fontSize: 14.0)),
-              ]
-          ),
-          SizedBox(height:8),
-        ],
-      ),
-      //오른쪽 아이콘들
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: Icon(Icons.edit, color: Colors.cyan[900]!.withOpacity(0.75)),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyHomePage()),
-              );
-            },
-          ),
-          Icon(
-            _customTileExpanded ? Icons.arrow_drop_down_circle : Icons.arrow_drop_down,
-          ),
-        ],
-      ),
-      //Expand된 타일 내용
-      children: <Widget>[
-        ListTile(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, 
-            children:[
-              Row(
-                children:[
-                  SizedBox(width: 10.0),
-                  Icon(Icons.person, color: Colors.cyan[900]!.withOpacity(0.75)),
-                  SizedBox(width: 8.0),
-                  Text('인원: ${travelInfo.numPeople}명', style: TextStyle(fontSize: 14.0)),
-                  SizedBox(width: 16.0),
-                  Icon(Icons.paid, color: Colors.cyan[900]!.withOpacity(0.75)),
-                  SizedBox(width: 8.0),
-                  Text('예산: ${travelInfo.budget}만원', style: TextStyle(fontSize: 14.0)),
-                  SizedBox(width: 16.0),
-                  Icon(Icons.hotel, color: Colors.cyan[900]!.withOpacity(0.75)),
-                  SizedBox(width: 8.0),
-                  Text('숙소: ${accommodationLabels[travelInfo.accommodation]}', style: TextStyle(fontSize: 14.0)),
-                ]
-              ), 
-              SizedBox(height:10),
-              Row(
-                children:[
-                for (int i = 0; i < travelInfo.travelStyle.length; i++)
-                  if (travelInfo.travelStyle[i])
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Chip(
-                        label: Text(travelStyleLabels[i], style: TextStyle(fontSize: 14.0)),
-                      ),
-                    ),
-                  ]
-                )
-              ]
-            )
-          ),
-        ],
-      onExpansionChanged: (bool expanded) {
-        setState(() {
-          _customTileExpanded = expanded;
-        });
-      },
-    );
-  }
-  Widget _widgetTravelPlanListView(context, List<TravelPlan> travel_plans){
-    return Expanded(
-      child: ListView.builder(
-        itemCount: travel_plans.length,
-        itemBuilder: (context, index) {
-          return InkWell(
+
+  Widget _buildSearchResult() {
+    // 아무 일정도 없으면 안내 문구
+    if (_travelPlans.isEmpty) {
+      return Center(child: Text('No travel plans found.'));
+    }
+
+    // 유저가 입력한 요청
+    final request = context.read<TravelSearchProvider>().request!;
+
+    // 이번 검색에 대한 고유 searchID(예: departure기준)
+    // => 모든 플랜은 동일한 searchID를 갖되, "travelPlanID"만 달라짐
+    final int searchID = request.departure.millisecondsSinceEpoch;
+
+    return ListView.builder(
+      itemCount: _travelPlans.length,
+      itemBuilder: (context, index) {
+        final plan = _travelPlans[index];
+        final planName = plan["name"] ?? "No name";
+        final summary = plan["summary"] ?? "";
+
+        // 해당 plan의 id
+        final travelPlanID = index;
+
+        // 즐겨찾기 여부
+        final isFav = context
+            .watch<FavoritesProvider>()
+            .isFavorite(searchID, travelPlanID);
+
+        return Card(
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ListTile(
+            title: Text(planName),
+            subtitle: Text(summary),
             onTap: () {
+              // 상세페이지로 이동
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ResultsPage(
-                    travelPlan: travel_plans[index],
-                  ),
+                  builder: (context) => ResultsPage(travelPlan: plan),
                 ),
               );
             },
-          child: TravelPlanCard(travel_plan: travel_plans[index]),);
-        },
-      ),  
-    );
-  }
-}
-
-class TravelPlanCard extends StatelessWidget {
-  final TravelPlan travel_plan;
-  TravelPlanCard({required this.travel_plan});
-
-  @override
-  Widget build(BuildContext context) {
-    final travelInfo = context.watch<UserInputProvider>().userInput;
-
-    if (travelInfo == null) {
-      return SizedBox();
-    }
-
-    String date = formatDateRange(travelInfo.departure, travelInfo.arrival);
-    
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0), 
-      ),
-      elevation: 2.0, 
-      margin: EdgeInsets.all(12.0),
-      child: Padding(
-        padding: EdgeInsets.all(12.0),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
-              child: Container(
-                width: 100,
-                height: 100,
-                child: Image.asset(
-                  travel_plan.img1, // 이미지 경로 사용
-                  fit: BoxFit.cover, // 이미지가 잘 맞도록 설정
-                ),
+            // -----------------------------
+            // 하트 아이콘 (즐겨찾기 토글)
+            // -----------------------------
+            trailing: IconButton(
+              icon: Icon(
+                isFav ? Icons.favorite : Icons.favorite_border,
+                color: isFav ? Colors.red : null,
               ),
+              onPressed: () {
+                // 날짜 문자열 예시
+                final dateString =
+                    "${request.departure.year}.${request.departure.month}.${request.departure.day}"
+                    " - ${request.arrival.year}.${request.arrival.month}.${request.arrival.day}";
+
+                if (isFav) {
+                  // 이미 즐겨찾기라면 => 제거
+                  context
+                      .read<FavoritesProvider>()
+                      .removeFavorite(searchID, travelPlanID);
+                } else {
+                  // 아직 즐겨찾기가 아니라면 => 추가
+                  final newFavorite = FavoritesItem(
+                    title: planName,
+                    country: request.country,
+                    state: request.state,
+                    path: 'assets/images/travel_1.jpg',
+                    date: dateString,
+                    searchID: searchID,
+                    travelPlanID: travelPlanID,
+                    planData: plan, // ChatGPT 원본 JSON
+                  );
+                  context.read<FavoritesProvider>().addFavorite(newFavorite);
+                }
+              },
             ),
-            SizedBox(width: 16),
-            // 오른쪽 정보 영역
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 칩들
-                  Row(
-                    children: [
-                      Chip(
-                        label: Text('${travelInfo.numPeople}명'),
-                        avatar: Icon(Icons.person, size: 14),
-                      ),
-                      SizedBox(width: 8),
-                      Chip(
-                        label: Text('${travel_plan.hotel} ${accommodationLabels[travelInfo.accommodation]}'),
-                        avatar: Icon(Icons.hotel, size: 14),
-                      ),
-                      SizedBox(width: 8),
-                      Chip(
-                        label: Text('${travel_plan.keyword}'),
-                        avatar: Icon(Icons.tag, size: 14),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  // 여행 계획 정보 텍스트
-                  Text('[${travelInfo.state}] ${travel_plan.title}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 1),
-                  Text(
-                    '₩ ${travel_plan.price} 만원',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,color: Colors.cyan.shade900),
-                  ),
-                  SizedBox(height: 3),
-                  Text(
-                    '${travel_plan.summary}',
-                    style: TextStyle(fontSize: 14, color: Colors.blueGrey, fontStyle: FontStyle.italic,),
-                  ),
-                  SizedBox(height: 3),
-                  Text(
-                    'Date: ${date}',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
