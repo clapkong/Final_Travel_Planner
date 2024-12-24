@@ -1,3 +1,4 @@
+// lib/widgets/itinerary.dart
 import 'package:flutter/material.dart';
 
 Map<String, List<Map<String, dynamic>>> fetchItineraryById(
@@ -7,7 +8,7 @@ Map<String, List<Map<String, dynamic>>> fetchItineraryById(
     return Map<String, List<Map<String, dynamic>>>.from(
         dbjson['travel_itinery']['$id']);
   }
-  return {}; // id에 맞는 itinerary가 없으면 빈 데이터 반환
+  return {};
 }
 
 class ScheduleList extends StatefulWidget {
@@ -26,29 +27,34 @@ class _ScheduleListState extends State<ScheduleList> {
 
   @override
   Widget build(BuildContext context) {
+    final dayKeys = widget.scheduleData.keys.toList(); // ["Day1", "Day2", ...]
+    dayKeys.sort(); // "Day1", "Day2" 순서대로
+
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(width: 16),
-            ...List.generate(widget.scheduleData.keys.length, (index) {
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: List.generate(dayKeys.length, (index) {
+              final dayLabel = dayKeys[index];
+              final numericDay = index + 1;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: ChoiceChip(
-                  label: Text('Day ${index + 1}'),
-                  selected: currentDay == (index + 1),
+                  label: Text(dayLabel), // "Day1", "Day2"
+                  selected: currentDay == numericDay,
                   onSelected: (bool selected) {
                     if (selected) {
                       setState(() {
-                        currentDay = index + 1;
+                        currentDay = numericDay;
                       });
                     }
                   },
                 ),
               );
             }),
-          ],
+          ),
         ),
         SizedBox(height: 20),
         Expanded(
@@ -65,7 +71,7 @@ class _ScheduleListState extends State<ScheduleList> {
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: getScheduleItemsForDay(widget.scheduleData, currentDay),
+                    children: _getScheduleItemsForDay(currentDay, dayKeys),
                   ),
                 ],
               ),
@@ -75,29 +81,34 @@ class _ScheduleListState extends State<ScheduleList> {
       ],
     );
   }
-}
 
-List<Widget> getScheduleItemsForDay(Map<String, dynamic> scheduleData, int day) {
-  String dayKey = 'Day$day';
-  if (!scheduleData.containsKey(dayKey)) {
-    return [Text('해당 날짜의 일정이 없습니다.')];
+  List<Widget> _getScheduleItemsForDay(int day, List<String> dayKeys) {
+    if (day - 1 < 0 || day - 1 >= dayKeys.length) {
+      return [SizedBox(height: 20), Center(child: Text('해당 날짜의 일정 없음'))];
+    }
+
+    final dayKey = dayKeys[day - 1]; // 예: "Day1"
+    if (!widget.scheduleData.containsKey(dayKey)) {
+      return [SizedBox(height: 20), Center(child: Text('해당 날짜의 일정 없음'))];
+    }
+
+    final dayList = widget.scheduleData[dayKey] as List<dynamic>;
+    return dayList.map<Widget>((item) {
+      return Column(
+        children: [
+          ScheduleItem(
+            index: item['index'],
+            time: item['time'] ?? '',
+            title: item['title'] ?? '',
+            location: item['location'] ?? '',
+            subwayInfo: item['subwayInfo'] ?? '',
+            cost: item.containsKey('cost') ? '${item['cost']} ₩' : null,
+          ),
+          SizedBox(height: 16),
+        ],
+      );
+    }).toList();
   }
-
-  return (scheduleData[dayKey] as List<dynamic>).map<Widget>((item) {
-    return Column(
-      children: [
-        ScheduleItem(
-          index: item['index'],
-          time: item['time'],
-          title: item['title'],
-          location: item['location'] ?? null,
-          subwayInfo: item['subwayInfo'] ?? null,
-          cost: item.containsKey('cost') ? '${item['cost']} ₩' : null,
-        ),
-        SizedBox(height: 16),
-      ],
-    );
-  }).toList();
 }
 
 class DashedLine extends StatelessWidget {
@@ -105,20 +116,22 @@ class DashedLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        double dashWidth = 4;
+        double dashHeight = 4;
         double dashSpace = 4;
-        final double dashCount = constraints.constrainHeight() / (dashWidth + dashSpace);
+        final double dashCount =
+            constraints.constrainHeight() / (dashHeight + dashSpace);
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(dashCount.floor(), (index) =>
-              SizedBox(
-                width: 2,
-                height: dashWidth,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(color: Colors.grey),
-                ),
+          children: List.generate(
+            dashCount.floor(),
+            (index) => SizedBox(
+              width: 2,
+              height: dashHeight,
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: Colors.grey),
               ),
             ),
+          ),
         );
       },
     );
@@ -129,7 +142,7 @@ class ScheduleItem extends StatelessWidget {
   final int index;
   final String time;
   final String title;
-  final String? location;
+  final String location;
   final String? subwayInfo;
   final String? cost;
 
@@ -137,7 +150,7 @@ class ScheduleItem extends StatelessWidget {
     required this.index,
     required this.time,
     required this.title,
-    this.location,
+    required this.location,
     this.subwayInfo,
     this.cost,
   });
@@ -177,9 +190,9 @@ class ScheduleItem extends StatelessWidget {
               Text(
                 time,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.cyan[900]
+                  color: Colors.cyan[900],
                 ),
               ),
               SizedBox(height: 8),
@@ -187,28 +200,25 @@ class ScheduleItem extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
                 ),
-                elevation: 4,
+                elevation: 2,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      if (location != null) buildInfoRow(Icons.location_on, location!),
-                      if (subwayInfo != null) buildInfoRow(Icons.directions_subway, subwayInfo!),
-                      if (cost != null) buildInfoRow(Icons.attach_money, cost!),
-                      SizedBox(height: 16),
+                      if (location.isNotEmpty)
+                        _buildInfoRow(Icons.location_on, location),
+                      if (subwayInfo != null && subwayInfo!.isNotEmpty)
+                        _buildInfoRow(Icons.directions_subway, subwayInfo!),
+                      if (cost != null)
+                        _buildInfoRow(Icons.attach_money, cost!),
                     ],
                   ),
                 ),
@@ -220,16 +230,16 @@ class ScheduleItem extends StatelessWidget {
     );
   }
 
-  Widget buildInfoRow(IconData icon, String text) {
-  return Padding(
-    padding: const EdgeInsets.only(top: 8.0),
-    child: Row(
-      children: [
-        Icon(icon),
-        SizedBox(width: 8),
-        Expanded(child: Text(text)),
-      ],
-    ),
-  );
-}
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 6.0),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.grey[700], size: 16),
+          SizedBox(width: 6),
+          Expanded(child: Text(text)),
+        ],
+      ),
+    );
+  }
 }
