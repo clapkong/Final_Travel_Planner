@@ -1,6 +1,6 @@
 # travel_planner
 
-This project is a Travel Optimizer for Applied Mobile Programming(GAI3008) by Soobin Park.
+This project is a Travel Optimizer for Applied Mobile Programming(GAI3008)
 
 ## Getting Started
 
