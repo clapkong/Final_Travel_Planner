@@ -12,6 +12,7 @@ class ChatGPTService {
 
   Future<Map<String, dynamic>> fetchTravelPlan(
       TravelSearchRequest request) async {
+
     final prompt = _buildPrompt(request);
 
     final response = await http.post(
@@ -21,11 +22,11 @@ class ChatGPTService {
         'Authorization': 'Bearer $_apiKey',
       },
       body: json.encode({
-        "model": "gpt-3.5-turbo",
+        "model": "gpt-4o",
         "messages": [
           {"role": "user", "content": prompt}
         ],
-        "max_tokens": 2000,
+        "max_tokens": 8000,
         "temperature": 0.7,
       }),
     );
@@ -34,14 +35,29 @@ class ChatGPTService {
       final decodedBody = utf8.decode(response.bodyBytes);
       final responseBody = jsonDecode(decodedBody);
 
-      final String assistantMessage =
-          responseBody["choices"][0]["message"]["content"];
+      String assistantMessage =
+      responseBody["choices"][0]["message"]["content"];
+
+      if (assistantMessage.startsWith("```json") && assistantMessage.endsWith("```")) {
+        assistantMessage = assistantMessage.replaceFirst("```json", "").replaceFirst(RegExp(r'```$'), ""); // 앞의 7글자와 뒤의 3글자를 제거
+      }
 
       debugPrint("===== ChatGPT Raw JSON String =====");
       debugPrint(assistantMessage);
 
       try {
         final parsedJson = jsonDecode(assistantMessage);
+        if (parsedJson != null && parsedJson!.containsKey("travelPlans")) {
+
+          for (int index = 0; index < parsedJson["travelPlans"].length; index++) {
+            parsedJson["travelPlans"][index]["currency"] = request.currency;
+            for (int index2 = 0; index2 < parsedJson["travelPlans"][index]["days"].length; index2++) {
+              parsedJson["travelPlans"][index]["days"][index2]["currency"] = request.currency;
+              //debugPrint(JsonEncoder.withIndent('  ').convert(parsedJson["travelPlans"][index]["days"][index2]));
+            }
+          }
+          debugPrint(JsonEncoder.withIndent('  ').convert(parsedJson));
+        }
         return {
           "assistantMessageRaw": assistantMessage,
           "assistantMessageParsed": parsedJson,
@@ -67,9 +83,11 @@ class ChatGPTService {
 배열로 travelPlans를 만들어서, 예: "travelPlans": [ {...}, {...}, ... ]
 
 [조건들]
-1) 전체 여행 기간(예: 3박4일)이 ${request.budget} ${request.currency} 내외로 맞춰지도록:
+0) JSON 출력에 사용할 화폐 단위는 ${request.currency}야. 알맞게 변환해줘.
+
+1) 전체 여행 기간(예: 3박4일)이 ${request.budget} KRW 이내면서 근접하게 맞춰지도록:
    - 하루 경비 = (숙박비 + 식사비 + 일정(입장료, 체험비 등)) 총합
-   - 각 day마다 "totalPrice"로 표시, 모든 day 합산이 ${request.budget} ${request.currency} 근처가 되도록.
+   - 각 day마다 "totalPrice"로 표시, 모든 day 합산이 ${request.budget} KRW 근처가 되도록.
    - 여행일수는 ${daysCount}일 (day=1..${daysCount})에 해당하도록.
 
 2) 하루 일정은 (아침 9시 ~ 저녁 9시) 사이에 3~5개 이상 활동 구성하되, **이동 거리가 너무 길지 않도록**.
@@ -96,8 +114,8 @@ class ChatGPTService {
           "day": 1,
           "hotel": {
             "name": "실제 호텔 명",
-            "checkin": "14:00",
-            "checkout": "12:00",
+            "checkin": "12:00",
+            "checkout": "14:00",
             "location": "...",
             "pricePerNight": 100000
           },
@@ -105,7 +123,7 @@ class ChatGPTService {
           "itinerary": [
             {
               "index": 0,
-              "time": "09:00 - 09:00",
+              "time": "09:00 - 09:20",
               "title": "조식",
               "location": "숙소 내 레스토랑",
               "cost": 10000
@@ -140,7 +158,7 @@ class ChatGPTService {
 - 여행일수: ${daysCount}일
 - 국가/도시: ${request.country}, ${request.city}
 - 인원: ${request.numPeople}명
-- 예산: ${request.budget} ${request.currency}
+- 예산: ${request.budget} KRW
 - 숙소 index: ${request.accommodation}
 - 여행 스타일: ${request.travelStyle}
 - 추가 요구사항: ${request.command}
@@ -149,6 +167,7 @@ class ChatGPTService {
 
 이 조건을 지켜서 구체적으로 JSON 만들어줘. (이미지 정보는 없이 해줘)
 JSON만 반환하고, 다른 문장은 쓰지마.
+가격좀 상식적으로 생각하고 답해.
 ''';
   }
 }
