@@ -17,7 +17,9 @@ class ResultsPage extends StatelessWidget {
       appBar: AppBar(title: Text('Results Detail')),
       body: Column(
         children: [
+          SizedBox(height:30),
           Text("일정: $name", style: TextStyle(fontSize: 20)),
+          SizedBox(height:30),
           Expanded(
             child: _buildScheduleList(travelPlan),
           ),

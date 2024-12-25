@@ -9,6 +9,14 @@ import 'results_page.dart';
 // 즐겨찾기 관련
 import '../providers/favorites_provider.dart';
 
+String formatDateRange(DateTime departure, DateTime arrival) {
+    return '${formatDate(departure)} - ${formatDate(arrival)}';
+}
+
+String formatDate(DateTime date){
+  return '${date.year}.${date.month.toString().padLeft(2, '0')}.${date.day.toString().padLeft(2, '0')}';
+}
+
 class SearchPage extends StatefulWidget {
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -72,10 +80,10 @@ class _SearchPageState extends State<SearchPage> {
           ? Center(child: CircularProgressIndicator())
           : (request == null)
               ? Center(child: Text('Home Page에서 정보를 입력하세요'))
-              : _buildSearchResult(),
+              : Column(children: <Widget>[_widgetExpansionTile(context, request),const SizedBox(height:10),_buildSearchResult(),],)
     );
   }
-  Widget _widgetExpansionTile(BuildContext context, TravelSearchRequest request, String date) {
+  Widget _widgetExpansionTile(BuildContext context, TravelSearchRequest request) {
   return ExpansionTile(
     backgroundColor: Colors.cyan[50],
     collapsedBackgroundColor: Colors.cyan[50],
@@ -86,7 +94,7 @@ class _SearchPageState extends State<SearchPage> {
         Icon(Icons.info, color: Colors.cyan.shade900),
         SizedBox(width: 8.0),
         Text(
-          'Travel Plans for ${request.state}, ${request.country}',
+          'Showing Travel Plans for:',
           style: TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.w600,
@@ -95,19 +103,29 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ],
     ),
-    subtitle: Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Row(
+    subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, 
         children: [
-          Icon(Icons.calendar_today, size: 16.0, color: Colors.cyan.shade700),
-          SizedBox(width: 6.0),
-          Text(
-            date,
-            style: TextStyle(fontSize: 14.0, color: Colors.grey.shade700),
+          Row(
+            children:[
+              SizedBox(width:10),
+              Icon(Icons.location_on, color: Colors.cyan[900]!.withOpacity(0.75)),
+              SizedBox(width: 8.0),
+              Text('${request.state}, ${request.country}', style: TextStyle(fontSize: 14.0)),
+            ]
+          ), 
+          SizedBox(height:8), 
+          Row(
+            children:[
+              SizedBox(width:10),
+              Icon(Icons.calendar_today, color: Colors.cyan[900]!.withOpacity(0.75)),
+              SizedBox(width: 8.0),
+              Text('${formatDateRange(request.departure, request.arrival)}', style: TextStyle(fontSize: 14.0)),
+              ]
           ),
+          SizedBox(height:8),
         ],
       ),
-    ),
     trailing: Icon(
       _customTileExpanded ? Icons.arrow_drop_down_circle : Icons.arrow_drop_down,
       color: Colors.cyan.shade900,
@@ -117,63 +135,44 @@ class _SearchPageState extends State<SearchPage> {
         _customTileExpanded = expanded;
       });
     },
-    children: [
-      ListTile(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.person, size: 18.0, color: Colors.cyan.shade900),
-                SizedBox(width: 8.0),
-                Text(
-                  '인원: ${request.numPeople}명',
-                  style: TextStyle(fontSize: 14.0),
-                ),
-                SizedBox(width: 16.0),
-                Icon(Icons.paid, size: 18.0, color: Colors.cyan.shade900),
-                SizedBox(width: 8.0),
-                Text(
-                  '예산: ${request.budget}만원',
-                  style: TextStyle(fontSize: 14.0),
-                ),
-              ],
-            ),
-            SizedBox(height: 8.0),
-            Row(
-              children: [
-                Icon(Icons.hotel, size: 18.0, color: Colors.cyan.shade900),
-                SizedBox(width: 8.0),
-                Text(
-                  '숙소: ${accommodationLabels[request.accommodation]}',
-                  style: TextStyle(fontSize: 14.0),
-                ),
-              ],
-            ),
-            SizedBox(height: 12.0),
-            Wrap(
-              spacing: 8.0,
-              runSpacing: 4.0,
-              children: request.travelStyle
-                  .asMap()
-                  .entries
-                  .where((entry) => entry.value)
-                  .map(
-                    (entry) => Chip(
-                      label: Text(
-                        travelStyleLabels[entry.key],
-                        style: TextStyle(fontSize: 14.0),
+    children: <Widget>[
+        ListTile(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, 
+            children:[
+              Row(
+                children:[
+                  SizedBox(width: 10.0),
+                  Icon(Icons.person, color: Colors.cyan[900]!.withOpacity(0.75)),
+                  SizedBox(width: 8.0),
+                  Text('인원: ${request.numPeople}명', style: TextStyle(fontSize: 14.0)),
+                  SizedBox(width: 16.0),
+                  Icon(Icons.paid, color: Colors.cyan[900]!.withOpacity(0.75)),
+                  SizedBox(width: 8.0),
+                  Text('예산: ${request.budget}만원', style: TextStyle(fontSize: 14.0)),
+                  SizedBox(width: 16.0),
+                  Icon(Icons.hotel, color: Colors.cyan[900]!.withOpacity(0.75)),
+                  SizedBox(width: 8.0),
+                  Text('숙소: ${accommodationLabels[request.accommodation]}', style: TextStyle(fontSize: 14.0)),
+                ]
+              ), 
+              SizedBox(height:10),
+              Row(
+                children:[
+                for (int i = 0; i < request.travelStyle.length; i++)
+                  if (request.travelStyle[i])
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Chip(
+                        label: Text(travelStyleLabels[i], style: TextStyle(fontSize: 14.0)),
                       ),
-                      backgroundColor: Colors.cyan.shade50,
-                      side: BorderSide(color: Colors.cyan.shade900),
                     ),
-                  )
-                  .toList(),
-            ),
-          ],
-        ),
-      ),
-    ],
+                  ]
+                )
+              ]
+            )
+          ),
+        ],
   );
 }
 
@@ -191,7 +190,7 @@ class _SearchPageState extends State<SearchPage> {
     // => 모든 플랜은 동일한 searchID를 갖되, "travelPlanID"만 달라짐
     final int searchID = request.departure.millisecondsSinceEpoch;
 
-    return ListView.builder(
+    return Expanded(child:ListView.builder(
       itemCount: _travelPlans.length,
       itemBuilder: (context, index) {
         final plan = _travelPlans[index];
@@ -282,6 +281,6 @@ class _SearchPageState extends State<SearchPage> {
           ),
         );
       },
-    );
+    ));
   }
 }
