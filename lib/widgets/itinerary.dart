@@ -13,9 +13,11 @@ Map<String, List<Map<String, dynamic>>> fetchItineraryById(
 
 class ScheduleList extends StatefulWidget {
   final Map<String, dynamic> scheduleData;
+  final String currency;
 
   const ScheduleList({
     required this.scheduleData,
+    required this.currency,
   });
 
   @override
@@ -102,7 +104,7 @@ class _ScheduleListState extends State<ScheduleList> {
             title: item['title'] ?? '',
             location: item['location'] ?? '',
             subwayInfo: item['subwayInfo'] ?? '',
-            cost: item.containsKey('cost') ? '${item['cost']} ₩' : null,
+            cost: item.containsKey('cost') ? '${item['cost']} ${widget.currency}' : null,
           ),
           SizedBox(height: 16),
         ],

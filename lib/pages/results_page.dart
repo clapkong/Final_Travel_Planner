@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'favorites_page.dart';
 import '../widgets/itinerary.dart';
 
-
 class ResultsPage extends StatelessWidget {
   final Map<String, dynamic> travelPlan;
 
@@ -17,9 +16,9 @@ class ResultsPage extends StatelessWidget {
       appBar: AppBar(title: Text('Results Detail')),
       body: Column(
         children: [
-          SizedBox(height:30),
+          SizedBox(height: 30),
           Text("일정: $name", style: TextStyle(fontSize: 20)),
-          SizedBox(height:30),
+          SizedBox(height: 30),
           Expanded(
             child: _buildScheduleList(travelPlan),
           ),
@@ -30,8 +29,9 @@ class ResultsPage extends StatelessWidget {
 
   Widget _buildScheduleList(Map<String, dynamic> planData) {
     final dayMap = convertChatGPTPlanToDayMap(planData);
-    return ScheduleList(scheduleData: dayMap);
+    return ScheduleList(scheduleData: dayMap, currency: planData!["currency"]);
   }
+
   Map<String, List<Map<String, dynamic>>> convertChatGPTPlanToDayMap(
       Map<String, dynamic> planData) {
     final List<dynamic> days = planData["days"] ?? [];

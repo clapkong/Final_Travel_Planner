@@ -88,7 +88,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
+                              SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(
                                 children: [
                                   Icon(Icons.location_on,
                                       size: 14, color: Colors.grey),
@@ -98,7 +98,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                     style: TextStyle(fontSize: 12),
                                   ),
                                 ],
-                              ),
+                              ),),
                               Row(
                                 children: [
                                   Icon(Icons.calendar_today,
@@ -198,12 +198,17 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   Widget _buildChatGptSchedule(Map<String, dynamic> planData) {
     final Map<String, dynamic> dayMap = convertChatGPTPlanToDayMap(planData);
-    return ScheduleList(scheduleData: dayMap);
+    debugPrint(planData.toString());
+    return ScheduleList(
+        scheduleData: dayMap,
+        currency: planData["currency"]
+    );
   }
 
   Widget _buildPseudoDataSchedule(int travelPlanID) {
     return ScheduleList(
       scheduleData: fetchItineraryById(dbjson, travelPlanID),
+      currency: "KRW"
     );
   }
 

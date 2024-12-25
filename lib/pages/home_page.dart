@@ -1,12 +1,13 @@
 // lib/pages/home_page.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:csc_picker/csc_picker.dart';
+// import 'package:csc_picker/csc_picker.dart';
+import '../pages/custom_csc_picker.dart';
 
 import '../providers/travel_search_provider.dart';
 import '../models/travel_search_request.dart';
 import 'search_page.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  //numPeople decrement 
+  //numPeople decrement
   void _decrementCounter() {
     setState(() {
       if (numPeople > 1) {
@@ -48,20 +49,28 @@ class _HomePageState extends State<HomePage> {
   //Style 변수들
   final themeColor = Colors.cyan;
   final Color? themeColor900 = Colors.cyan[900];
-  final subtitletextStyle = TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.cyan[900]);
+  final subtitletextStyle = TextStyle(
+      fontSize: 14, fontWeight: FontWeight.bold, color: Colors.cyan[900]);
   final double? subIconSize = 18;
 
   final TextEditingController _textController = TextEditingController();
 
   void _updateAddress() {
     setState(() {
-      address = "$city, $state, $country";
+      address = [city, state, country].where((e) => e?.isNotEmpty ?? false).join(", ");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+        onTap: () {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+        currentFocus.unfocus();
+      }
+    },
+    child: Scaffold(
       appBar: AppBar(title: Text('Home Page')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(25.0),
@@ -71,17 +80,21 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(Icons.flight, color: themeColor900, size: 20), 
+                Icon(Icons.flight, color: themeColor900, size: 20),
                 SizedBox(width: 8),
-                Text('여행 정보 입력 ', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: themeColor900)),
-                
+                Text('여행 정보 입력 ',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: themeColor900)),
               ],
             ),
-            const SizedBox(height:5),
+            const SizedBox(height: 5),
             const Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text('추가 정보를 입력해 주시면 AI가 더욱 정확하게 도와드릴 수 있습니다 :)'),
+                Expanded(child: Text('추가 정보를 입력해 주시면 AI가 더욱 정확하게 도와드릴 수 있습니다 :)', softWrap:true, overflow:TextOverflow.visible),
+                )
               ],
             ),
             const SizedBox(height: 20),
@@ -99,52 +112,58 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-    );
+    ),);
   }
 
   Widget _widgetAICommandInput() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: _textController,
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          decoration: InputDecoration(
-            labelText: 'AI Planner에게 여행 계획을 알려주세요!',
-            filled: true,
-            fillColor: Colors.grey[100],
-            border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(
-                      color: themeColor900!,
-                    ),
-                  ),focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(
-                      color: themeColor900!, 
-                      width: 2.0, 
-                    ),
-                  ),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: _textController,
+            autofocus: false,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            decoration: InputDecoration(
+              labelText: 'AI Planner에게 여행 계획을 알려주세요!',
+              filled: true,
+              fillColor: Colors.grey[100],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide(
+                  color: themeColor900!,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide(
+                  color: themeColor900!,
+                  width: 2.0,
+                ),
+              ),
+            ),
           ),
-        ),
-        SizedBox(height: 3),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(width: 10),
-            Text('추가 특이사항/스타일 등을 자유롭게 적어보세요.', style: TextStyle(color: themeColor900, fontSize: 11)),
-          ],
-        ),
-        SizedBox(height:10),
-        SizedBox(height:10),
-        Divider(height: 30, color: Colors.grey[300]),
-      ],
+          SizedBox(height: 3),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(width: 10),
+              Text(
+                '추가 특이사항/스타일 등을 자유롭게 적어보세요.',
+                style: TextStyle(color: themeColor900, fontSize: 11),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Divider(height: 30, color: Colors.grey[300]),
+        ],
+
     );
   }
+
 
   Widget _widgetDestinationPicker() {
     return Column(
@@ -153,12 +172,12 @@ class _HomePageState extends State<HomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(Icons.place, color: themeColor900, size: subIconSize), 
+            Icon(Icons.place, color: themeColor900, size: subIconSize),
             SizedBox(width: 8),
             Text('목적지(Destination): ', style: subtitletextStyle),
           ],
         ),
-        SizedBox(height:5),
+        SizedBox(height: 5),
         CSCPicker(
           showStates: true,
           showCities: true,
@@ -170,122 +189,131 @@ class _HomePageState extends State<HomePage> {
           },
           onStateChanged: (value) {
             setState(() {
-              state = value ?? '';
-              _updateAddress();
+              if (value != 'State') {
+                state = value ?? '';
+                _updateAddress();
+              }
             });
           },
           onCityChanged: (value) {
             setState(() {
-              city = value ?? '';
-              _updateAddress();
+              if (value != 'City') {
+                city = value ?? '';
+                _updateAddress();
+              }
             });
           },
+          onChanged: () {
+            setState(() {FocusScope.of(context).unfocus();});
+          },
           dropdownDecoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          color: Colors.white,
-          border:
-              Border.all(color: Colors.cyan.shade100, width: 1)),
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              color: Colors.white,
+              border: Border.all(color: Colors.cyan.shade100, width: 1)),
 
-        //Disabled Dropdown box 
-        disabledDropdownDecoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            color: Colors.cyan.shade100,
-            border:
-                Border.all(color: Colors.cyan.shade100, width: 1)),
+          //Disabled Dropdown box
+          disabledDropdownDecoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              color: Colors.cyan.shade100,
+              border: Border.all(color: Colors.cyan.shade100, width: 1)),
 
-        //Selected item
-        selectedItemStyle: TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-        ),
-
-        //DropdownDialog Heading
-        dropdownHeadingStyle: TextStyle(
+          //Selected item
+          selectedItemStyle: TextStyle(
             color: Colors.black,
-            fontSize: 17,
-            fontWeight: FontWeight.bold),
+            fontSize: 14,
+          ),
 
-        ///DropdownDialog Item
-        dropdownItemStyle: TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-        ),
+          //DropdownDialog Heading
+          dropdownHeadingStyle: TextStyle(
+              color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
 
-        searchBarRadius: 15.0, //Search bar radius
+          ///DropdownDialog Item
+          dropdownItemStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 14,
+          ),
+
+          searchBarRadius: 15.0, //Search bar radius
         ),
         Text(address),
-        SizedBox(height:10),
+        SizedBox(height: 10),
       ],
     );
   }
+
   //'${departure.year}.${departure.month}.${departure.day}'
   //'${arrival.year}.${arrival.month}.${arrival.day}'
   Widget _widgetDatePicker() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children:[
-            Icon(Icons.schedule, color: themeColor900, size: subIconSize), 
-            SizedBox(width: 8),
-            Text('여행 기간(Duration): ', style: subtitletextStyle),
-            SizedBox(width: 20),
-            Expanded(
-              child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Spacer(),
+        Row(children: [
+          Icon(Icons.schedule, color: themeColor900, size: subIconSize),
+          SizedBox(width: 8),
+          Text('여행 기간(Duration): ', style: subtitletextStyle),
+          SizedBox(width: 10),
+          Expanded(
+            child: SingleChildScrollView( scrollDirection: Axis.horizontal, child:Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              // Spacer(),
+              SizedBox(width: 5),
 
-                //Departure Date Select Button
-                ElevatedButton.icon(
-                  icon: Icon(Icons.calendar_today),
-                  label:Text(flagSetDepartureDate==false? 'From':'${departure.year}.${departure.month}.${departure.day}'),
-                  onPressed: () async {
-                    final selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: departure,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(3000),
-                    );
-                    if(selectedDate != null){
-                      setState((){  
-                        departure = selectedDate;
-                      });
-                      flagSetDepartureDate = true;
-                    }
-                  },
-                ),
-                Spacer(),
-                
-                //Arrival Date Select Button
-                ElevatedButton.icon(
-                  icon: Icon(Icons.calendar_today),
-                  label: Text(
-                    flagSetArrivalDate==false? 'To':'${arrival.year}.${arrival.month}.${arrival.day}',
-                  ),
-                  onPressed: () async {
-                    final selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: arrival,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(3000),
-                    );
-                    if(selectedDate != null){
-                      setState((){
-                        arrival = selectedDate;
-                      });
-                      flagSetArrivalDate = true;
-                    }
-                  },
-                ),
-                Spacer(),
-                ]
+              //Departure Date Select Button
+              ElevatedButton.icon(
+                icon: Icon(Icons.calendar_today),
+                label: Text(flagSetDepartureDate == false
+                    ? 'From'
+                    : '${departure.year}.${departure.month}.${departure.day}'),
+                onPressed: () async {
+                  final selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: departure,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(3000),
+                  );
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  if (selectedDate != null) {
+                    setState(() {
+                      departure = selectedDate;
+                    });
+                    flagSetDepartureDate = true;
+                  }
+                },
               ),
-            )
-          ]
-        ),
-        Text(departure.compareTo(arrival) > 0? '여행 일정을 확인해주세요.': '', style:TextStyle(color: Colors.red)
-        ),
+              // Spacer(),
+              SizedBox(width: 5),
+
+              //Arrival Date Select Button
+              ElevatedButton.icon(
+                icon: Icon(Icons.calendar_today),
+                label: Text(
+                  flagSetArrivalDate == false
+                      ? 'To'
+                      : '${arrival.year}.${arrival.month}.${arrival.day}',
+                ),
+                onPressed: () async {
+                  final selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: arrival,
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(3000),
+                  );
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  if (selectedDate != null) {
+                    setState(() {
+                      FocusScope.of(context).unfocus();
+                      arrival = selectedDate;
+                    });
+                    flagSetArrivalDate = true;
+                  }
+                },
+              ),
+              // Spacer(),
+              SizedBox(width: 5),
+            ]),),
+          )
+        ]),
+        Text(departure.compareTo(arrival) > 0 ? '여행 일정을 확인해주세요.' : '',
+            style: TextStyle(color: Colors.red)),
         SizedBox(height: 20),
       ],
     );
@@ -293,41 +321,41 @@ class _HomePageState extends State<HomePage> {
 
   Widget _widgetNumPeopleCounter() {
     return NumPeopleCounter(
-    numPeople: numPeople,
-    increment: _incrementCounter,
-    decrement: _decrementCounter,
-    subtitleTextStyle: subtitletextStyle,
-    iconColor: themeColor900,
-    iconSize: subIconSize,
+      numPeople: numPeople,
+      increment: _incrementCounter,
+      decrement: _decrementCounter,
+      subtitleTextStyle: subtitletextStyle,
+      iconColor: themeColor900,
+      iconSize: subIconSize,
     );
   }
 
   Widget _widgetBudgetSlider() {
     return BudgetSlider(
-    budget: budget,
-    onChanged: (value) {
-      setState(() {
-        budget = value;
-      });
-    },
-    subtitleTextStyle: subtitletextStyle,
-    iconColor: themeColor900,
-    iconSize: subIconSize,
-  );
+      budget_raw: budget,
+      onChanged: (value) {
+        setState(() {
+          budget = value;
+        });
+      },
+      subtitleTextStyle: subtitletextStyle,
+      iconColor: themeColor900,
+      iconSize: subIconSize,
+    );
   }
 
   Widget _widgetAccommodationSelector() {
     return AccommodationSelector(
-    accommodation: accommodation,
-    onChanged: (value) {
-      setState(() {
-        accommodation = value!;
-      });
-    },
-    subtitleTextStyle: subtitletextStyle,
-    iconColor: themeColor900,
-    iconSize: subIconSize,
-  );
+      accommodation: accommodation,
+      onChanged: (value) {
+        setState(() {
+          accommodation = value!;
+        });
+      },
+      subtitleTextStyle: subtitletextStyle,
+      iconColor: themeColor900,
+      iconSize: subIconSize,
+    );
   }
 
   Widget _widgetTravelStyleSelector() {
@@ -346,12 +374,12 @@ class _HomePageState extends State<HomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(Icons.explore, color: themeColor900, size: subIconSize), 
+            Icon(Icons.explore, color: themeColor900, size: subIconSize),
             SizedBox(width: 8),
             Text('여행 스타일: ', style: subtitletextStyle),
           ],
         ),
-        SizedBox(height:5),
+        SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(3, (colIndex) {
@@ -369,7 +397,7 @@ class _HomePageState extends State<HomePage> {
                           });
                         },
                       ),
-                      Text(travelStyleLabels[index]),
+                      Expanded(child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: Text(travelStyleLabels[index]),)),
                     ],
                   );
                 }),
@@ -387,7 +415,8 @@ class _HomePageState extends State<HomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(Icons.currency_exchange, color: themeColor900, size: subIconSize), 
+            Icon(Icons.currency_exchange,
+                color: themeColor900, size: subIconSize),
             SizedBox(width: 8),
             Text('통화: ', style: subtitletextStyle),
           ],
@@ -521,11 +550,11 @@ class NumPeopleCounter extends SimpleInputField {
 }
 
 class BudgetSlider extends SimpleInputField {
-  final double budget;
+  final double budget_raw;
   final ValueChanged<double> onChanged;
 
   const BudgetSlider({
-    required this.budget,
+    required this.budget_raw,
     required this.onChanged,
     required TextStyle subtitleTextStyle,
     Color? iconColor,
@@ -540,17 +569,19 @@ class BudgetSlider extends SimpleInputField {
 
   @override
   Widget buildContent(BuildContext context) {
+    final int budget = budget_raw.round() <= 20 ? budget_raw.round()*5 : (budget_raw.round() <= 38 ? budget_raw.round()*50-900 : budget_raw.round()*100-2800);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("${budget} 만원  "),
-        Slider(
-          value: budget,
-          max: 2000,
-          divisions: 2000,
-          label: budget.round().toString(),
-          onChanged: onChanged,
+        SizedBox(width: 80, child: Text(" ${budget} 만원"),
         ),
+        Expanded(child: Slider(
+          value: budget_raw,
+          max: 51,
+          divisions: 51,
+          label: budget.toString(),
+          onChanged: onChanged,
+        ),),
       ],
     );
   }
@@ -576,7 +607,7 @@ class AccommodationSelector extends SimpleInputField {
 
   @override
   Widget buildContent(BuildContext context) {
-    return Row(
+    return SingleChildScrollView( scrollDirection: Axis.horizontal, child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(4, (index) {
         String label;
@@ -604,10 +635,10 @@ class AccommodationSelector extends SimpleInputField {
               onChanged: onChanged,
             ),
             Text(label),
-            SizedBox(width: 20),
+            SizedBox(width: 5),
           ],
         );
       }),
-    );
+    ),);
   }
 }
